@@ -1,0 +1,19 @@
+{
+  "name": "quiriquiri",
+  "version": "1.0.0",
+  "description": "QuiriQuiri: a Twitter client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "^3.1.0",
+    "twit": "^2.2.4"
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^1.2.0"
+  }
+}
