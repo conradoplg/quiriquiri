@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
-    "start": "electron ."
+    "start": "electron .",
+    "format": "find . -path ./node_modules -prune -o -name '*.js' -print | xargs js-beautify -r -n"
   },
   "author": "",
   "license": "MIT",

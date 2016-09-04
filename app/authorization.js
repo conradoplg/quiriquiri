@@ -1,7 +1,7 @@
 const assert = require('assert');
 var OAuth = require('mashape-oauth').OAuth;
 
-var TwitterAuthorization = module.exports.TwitterAuthorization = function (oauthCallback, consumerKey, consumerSecret) {
+var TwitterAuthorization = module.exports.TwitterAuthorization = function(oauthCallback, consumerKey, consumerSecret) {
     this.oa = new OAuth({
         requestUrl: 'https://api.twitter.com/oauth/request_token',
         accessUrl: 'https://api.twitter.com/oauth/access_token',
@@ -13,7 +13,7 @@ var TwitterAuthorization = module.exports.TwitterAuthorization = function (oauth
     })
 }
 
-TwitterAuthorization.prototype.getRequestToken = function (callback) {
+TwitterAuthorization.prototype.getRequestToken = function(callback) {
     this.oa.getOAuthRequestToken((error, oauthToken, oauthTokenSecret, results) => {
         if (error && errorCallback) {
             callback(error)
@@ -21,12 +21,12 @@ TwitterAuthorization.prototype.getRequestToken = function (callback) {
             this.oauthToken = oauthToken
             this.oauthTokenSecret = oauthTokenSecret
             callback(null, oauthToken, oauthTokenSecret)
-            //window.loadURL(`https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`)
+                //window.loadURL(`https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`)
         }
     })
 }
 
-TwitterAuthorization.prototype.getAccessToken = function (oauthParams, callback) {
+TwitterAuthorization.prototype.getAccessToken = function(oauthParams, callback) {
     oauthToken = oauthParams['oauth_token']
     oauthVerifier = oauthParams['oauth_verifier']
     assert.equal(this.oauthToken, oauthToken, "Returned oauth_token is different then requested.")
