@@ -1,4 +1,5 @@
 var secret = require('./secret')
+var TwitterAuthorization = require('./app/authorization').TwitterAuthorization
 
 var Twit = require('twit')
 
@@ -33,7 +34,7 @@ var fs = require('fs');
 var data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
 //console.log(JSON.stringify(data[0], null, 4));
 
-const {app, BrowserWindow, ipcMain} = require('electron')
+const {app, BrowserWindow, ipcMain, protocol} = require('electron')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -55,7 +56,28 @@ function createWindow () {
     // when you should delete the corresponding element.
     win = null
   })
+
+  protocol.registerFileProtocol('quiriquiri', (request, callback) => {
+      const url = require('url').parse(request.url, true)
+      console.log(JSON.stringify(url.query))
+      console.log(url.hostname)
+      callback()
+      if (url.hostname == 'authorize') {
+        twitterAuthorization.getAccessToken(url.query, function (error, token, secret) {
+           if (error) {
+               console.log(JSON.stringify(error))
+           } else {
+               console.log(`token ${token} secret ${secret}`)
+           }
+       })
+      }
+      win.loadURL(`file://${__dirname}/index.html`)
+    }, (error) => {
+      if (error) console.error('Failed to register protocol')
+    })
 }
+
+//protocol.registerStandardSchemes(['quiriquiri'])
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -90,4 +112,29 @@ ipcMain.on('asynchronous-message', (event, arg) => {
 ipcMain.on('synchronous-message', (event, arg) => {
   console.log(arg)  // prints "ping"
   event.returnValue = 'pong'
+})
+
+
+var secret = require('./secret')
+var OAuth = require('mashape-oauth').OAuth;
+var oa = new OAuth({
+    requestUrl: 'https://api.twitter.com/oauth/request_token',
+    accessUrl: 'https://api.twitter.com/oauth/access_token',
+    callback: 'quiriquiri://authorize',
+    consumerKey: secret['consumer_key'],
+    consumerSecret: secret['consumer_secret'],
+    version: "1.0",
+    signatureMethod: 'HMAC-SHA1',
+});
+
+var twitterAuthorization = new TwitterAuthorization('quiriquiri://authorize/', secret['consumer_key'], secret['consumer_secret'])
+
+ipcMain.on('add-user', () => {
+    twitterAuthorization.getRequestToken((error, token, secret) => {
+        if (error) {
+            console.log(JSON.stringify(error))
+        } else {
+            win.loadURL(`https://api.twitter.com/oauth/authenticate?oauth_token=${token}`)
+        }
+    })
 })

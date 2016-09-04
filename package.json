@@ -4,16 +4,18 @@
   "description": "QuiriQuiri: a Twitter client",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/mocha --reporter spec",
     "start": "electron ."
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "jquery": "^3.1.0",
+    "mashape-oauth": "^0.1.71",
     "twit": "^2.2.4"
   },
   "devDependencies": {
-    "electron-prebuilt": "^1.2.0"
+    "electron-prebuilt": "^1.2.0",
+    "mocha": "^3.0.2"
   }
 }

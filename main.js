@@ -49,4 +49,8 @@ ipcRenderer.on('asynchronous-reply', (event, arg) => {
 
 $(document).ready(() => {
     ipcRenderer.send('asynchronous-message', 'ping')
+    $('#add_user').click(function (event) {
+        event.preventDefault()
+        ipcRenderer.send('add-user')
+    })
 });
