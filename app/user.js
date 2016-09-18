@@ -26,14 +26,16 @@ class User extends EventEmitter {
     }
 
     verify(callback) {
-        this.twit.get('account/verify_credentials', { skip_status: true })
-          .catch(callback)
-          .then((result) => {
-            this.name = result.data.name
-            this.screen_name = result.data.screen_name
-            this.profile_image_url = result.data.profile_image_url_https
-            callback(null, this)
-        })
+        this.twit.get('account/verify_credentials', {
+                skip_status: true
+            })
+            .catch(callback)
+            .then((result) => {
+                this.name = result.data.name
+                this.screen_name = result.data.screen_name
+                this.profile_image_url = result.data.profile_image_url_https
+                callback(null, this)
+            })
     }
 
     loadConfig(config) {
@@ -70,7 +72,9 @@ class User extends EventEmitter {
         if (!all_tweets) {
             all_tweets = []
         }
-        var args = {count : 200}
+        var args = {
+            count: 200
+        }
         if (since_id) {
             args.since_id = since_id
         }
@@ -93,8 +97,8 @@ class User extends EventEmitter {
                     return
                 }
                 log.debug('Tweets returned: ', tweets.length)
-                if (all_tweets.length > 0 && tweets.length > 0
-                        && all_tweets[all_tweets.length - 1].id_str == tweets[0].id_str) {
+                if (all_tweets.length > 0 && tweets.length > 0 &&
+                    all_tweets[all_tweets.length - 1].id_str == tweets[0].id_str) {
                     //remove first, which is a duplicate
                     log.debug('Removed duplicate tweet')
                     tweets = tweets.slice(1)
@@ -110,8 +114,7 @@ class User extends EventEmitter {
                     }
                     this.emit('tweets-loaded', all_tweets)
                 }
-            }
-        )
+            })
     }
 }
 

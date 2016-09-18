@@ -21,7 +21,6 @@ TwitterAuthorization.prototype.getRequestToken = function(callback) {
             this.oauthToken = oauthToken
             this.oauthTokenSecret = oauthTokenSecret
             callback(null, oauthToken, oauthTokenSecret)
-                //window.loadURL(`https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`)
         }
     })
 }
