@@ -31,7 +31,7 @@ var T = new Twit({
 //  tdata = data
 //})
 var fs = require('fs');
-var data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+var data = JSON.parse(fs.readFileSync('data2.json', 'utf8'));
 //console.log(JSON.stringify(data[0], null, 4));
 
 const {
