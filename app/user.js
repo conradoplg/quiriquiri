@@ -73,7 +73,8 @@ class User extends EventEmitter {
             all_tweets = []
         }
         var args = {
-            count: 200
+            count: 200,
+            tweet_mode: 'extended'
         }
         if (since_id) {
             args.since_id = since_id

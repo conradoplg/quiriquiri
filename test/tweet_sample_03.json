@@ -1,0 +1,210 @@
+{
+  "html": "agora sim vou fazer tudo vou dar um rumo na minha vida / que seriado é esse que tá todo mundo falando <div class=\"media-set\"><a href=\"https://pbs.twimg.com/media/Cs1V33PWIAAq-bZ.jpg:large\"><img class=\"media media-2\" src=\"https://pbs.twimg.com/media/Cs1V33PWIAAq-bZ.jpg:small\"></a><a href=\"https://pbs.twimg.com/media/Cs1V5k2XYAAlohN.jpg:large\"><img class=\"media media-2\" src=\"https://pbs.twimg.com/media/Cs1V5k2XYAAlohN.jpg:small\"></a></div>",
+  "created_at": "Tue Sep 20 23:18:26 +0000 2016",
+  "id": 778372778655412200,
+  "id_str": "778372778655412225",
+  "full_text": "agora sim vou fazer tudo vou dar um rumo na minha vida / que seriado é esse que tá todo mundo falando https://t.co/4buoreujKy",
+  "truncated": false,
+  "display_text_range": [
+    0,
+    101
+  ],
+  "entities": {
+    "hashtags": [],
+    "symbols": [],
+    "user_mentions": [],
+    "urls": [],
+    "media": [
+      {
+        "id": 778372728814444500,
+        "id_str": "778372728814444544",
+        "indices": [
+          102,
+          125
+        ],
+        "media_url": "http://pbs.twimg.com/media/Cs1V33PWIAAq-bZ.jpg",
+        "media_url_https": "https://pbs.twimg.com/media/Cs1V33PWIAAq-bZ.jpg",
+        "url": "https://t.co/4buoreujKy",
+        "display_url": "pic.twitter.com/4buoreujKy",
+        "expanded_url": "https://twitter.com/wtfmiu/status/778372778655412225/photo/1",
+        "type": "photo",
+        "sizes": {
+          "large": {
+            "w": 2048,
+            "h": 1361,
+            "resize": "fit"
+          },
+          "medium": {
+            "w": 1200,
+            "h": 797,
+            "resize": "fit"
+          },
+          "thumb": {
+            "w": 150,
+            "h": 150,
+            "resize": "crop"
+          },
+          "small": {
+            "w": 680,
+            "h": 452,
+            "resize": "fit"
+          }
+        }
+      }
+    ]
+  },
+  "extended_entities": {
+    "media": [
+      {
+        "id": 778372728814444500,
+        "id_str": "778372728814444544",
+        "indices": [
+          102,
+          125
+        ],
+        "media_url": "http://pbs.twimg.com/media/Cs1V33PWIAAq-bZ.jpg",
+        "media_url_https": "https://pbs.twimg.com/media/Cs1V33PWIAAq-bZ.jpg",
+        "url": "https://t.co/4buoreujKy",
+        "display_url": "pic.twitter.com/4buoreujKy",
+        "expanded_url": "https://twitter.com/wtfmiu/status/778372778655412225/photo/1",
+        "type": "photo",
+        "sizes": {
+          "large": {
+            "w": 2048,
+            "h": 1361,
+            "resize": "fit"
+          },
+          "medium": {
+            "w": 1200,
+            "h": 797,
+            "resize": "fit"
+          },
+          "thumb": {
+            "w": 150,
+            "h": 150,
+            "resize": "crop"
+          },
+          "small": {
+            "w": 680,
+            "h": 452,
+            "resize": "fit"
+          }
+        }
+      },
+      {
+        "id": 778372758237569000,
+        "id_str": "778372758237569024",
+        "indices": [
+          102,
+          125
+        ],
+        "media_url": "http://pbs.twimg.com/media/Cs1V5k2XYAAlohN.jpg",
+        "media_url_https": "https://pbs.twimg.com/media/Cs1V5k2XYAAlohN.jpg",
+        "url": "https://t.co/4buoreujKy",
+        "display_url": "pic.twitter.com/4buoreujKy",
+        "expanded_url": "https://twitter.com/wtfmiu/status/778372778655412225/photo/1",
+        "type": "photo",
+        "sizes": {
+          "large": {
+            "w": 2048,
+            "h": 1361,
+            "resize": "fit"
+          },
+          "thumb": {
+            "w": 150,
+            "h": 150,
+            "resize": "crop"
+          },
+          "small": {
+            "w": 680,
+            "h": 452,
+            "resize": "fit"
+          },
+          "medium": {
+            "w": 1200,
+            "h": 797,
+            "resize": "fit"
+          }
+        }
+      }
+    ]
+  },
+  "source": "<a href=\"http://twitter.com/download/android\" rel=\"nofollow\">Twitter for Android</a>",
+  "in_reply_to_status_id": null,
+  "in_reply_to_status_id_str": null,
+  "in_reply_to_user_id": null,
+  "in_reply_to_user_id_str": null,
+  "in_reply_to_screen_name": null,
+  "user": {
+    "id": 3257258771,
+    "id_str": "3257258771",
+    "name": "gato miu",
+    "screen_name": "wtfmiu",
+    "location": "sofá da sala",
+    "description": "adotei humanos e me arrependi\nsnap: wtfmiu\n\nCONTATO: gatomiumu@gmail.com",
+    "url": "https://t.co/4rYHZnukkL",
+    "entities": {
+      "url": {
+        "urls": [
+          {
+            "url": "https://t.co/4rYHZnukkL",
+            "expanded_url": "https://instagram.com/gatomiu/",
+            "display_url": "instagram.com/gatomiu/",
+            "indices": [
+              0,
+              23
+            ]
+          }
+        ]
+      },
+      "description": {
+        "urls": []
+      }
+    },
+    "protected": false,
+    "followers_count": 70767,
+    "friends_count": 68,
+    "listed_count": 72,
+    "created_at": "Fri May 15 17:14:06 +0000 2015",
+    "favourites_count": 4596,
+    "utc_offset": -25200,
+    "time_zone": "Pacific Time (US & Canada)",
+    "geo_enabled": false,
+    "verified": false,
+    "statuses_count": 9120,
+    "lang": "pt",
+    "contributors_enabled": false,
+    "is_translator": false,
+    "is_translation_enabled": false,
+    "profile_background_color": "000000",
+    "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_tile": false,
+    "profile_image_url": "http://pbs.twimg.com/profile_images/728582202162843648/0hSOA-Fj_normal.jpg",
+    "profile_image_url_https": "https://pbs.twimg.com/profile_images/728582202162843648/0hSOA-Fj_normal.jpg",
+    "profile_banner_url": "https://pbs.twimg.com/profile_banners/3257258771/1460422291",
+    "profile_link_color": "1CA6C5",
+    "profile_sidebar_border_color": "000000",
+    "profile_sidebar_fill_color": "000000",
+    "profile_text_color": "000000",
+    "profile_use_background_image": false,
+    "has_extended_profile": false,
+    "default_profile": false,
+    "default_profile_image": false,
+    "following": false,
+    "follow_request_sent": false,
+    "notifications": false
+  },
+  "geo": null,
+  "coordinates": null,
+  "place": null,
+  "contributors": null,
+  "is_quote_status": false,
+  "retweet_count": 199,
+  "favorite_count": 199,
+  "favorited": false,
+  "retweeted": false,
+  "possibly_sensitive": false,
+  "possibly_sensitive_appealable": false,
+  "lang": "pt"
+}

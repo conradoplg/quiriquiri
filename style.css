@@ -49,8 +49,29 @@ p {
     color: gray;
 }
 
-.tweet img {
-    max-width: 100%;
+.tweet .media-set {
+    margin: 12px 0;
+    max-width: 500px;
+}
+
+.tweet .media {
     height: auto;
     border-radius: 5px;
+    padding: 0 1px;
+}
+
+.tweet .media-1 {
+    max-width: 100%;
+}
+
+.tweet .media-2 {
+    max-width: 50%;
+}
+
+.tweet .media-3 {
+    max-width: 33%;
+}
+
+.tweet .media-4 {
+    max-width: 25%;
 }

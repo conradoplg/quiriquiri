@@ -1,5 +1,7 @@
 "use strict"
 
+const log = require('winston')
+
 function createTweetDiv($, tweet) {
     var t = tweet;
     var shownStatus = tweet;
@@ -72,27 +74,35 @@ function createTweetDiv($, tweet) {
 function createTextDiv($, tag, tweet) {
     var t = tweet
     var ents = []
-    if (t.entities) {
-        const types = ['media', 'urls', 'user_mentions', 'hashtags', 'symbols', 'extended_entities']
-        for (const typ of types)
-            if (t.entities[typ]) {
-                let nents = t.entities[typ].map(e => [e.indices[0], typ, e])
-                ents = ents.concat(nents)
+    var ent_indinces = {}
+    var mediaCount = 0
+    const types = ['media', 'urls', 'user_mentions', 'hashtags', 'symbols', 'extended_entities']
+    for (const typ of types) {
+        let ent_key = (typ == 'media' ? 'extended_entities' : 'entities')
+        if (t[ent_key] && t[ent_key][typ]) {
+            let nents = t[ent_key][typ].map(e => [e.indices[0], typ, e])
+            ents = ents.concat(nents)
+            if (typ == 'media') {
+                mediaCount += nents.length
             }
+        }
     }
     ents.sort((a, b) => a[0] - b[0])
+    log.debug('Entities: ', ents)
 
-    var text = tweet.text
+    var text = Array.from(tweet.full_text || tweet.text)
     var offset = 0
+    var mediaDiv = null
     for (const e of ents) {
         let typ = e[1]
         let ent = e[2]
-        let chunk = text.substring(offset, ent.indices[0])
-        _add_chunk($, tag, chunk)
-        chunk = text.substring(ent.indices[0], ent.indices[1])
+        let chunk = text.slice(offset, ent.indices[0]).join('')
+        if (chunk.length > 0 && offset < ent.indices[0]) {
+            _add_chunk($, tag, chunk)
+        }
+        chunk = text.slice(ent.indices[0], ent.indices[1]).join('')
         offset = ent.indices[1]
         let url
-        let line_broken = false
         switch (typ) {
             case 'urls':
                 url = ent.expanded_url || ent.url
@@ -110,26 +120,42 @@ function createTextDiv($, tag, tweet) {
                 break
         }
         if (typ == 'media') {
-            if (!line_broken) {
-                tag.append($("<br/>"))
-                tag.append($("<br/>"))
-                line_broken = true
+            if (!mediaDiv) {
+                mediaDiv = $("<div></div>", {class: 'media-set'})
+                tag.append(mediaDiv)
             }
-            tag.append($("<a></a>", {
-                href: ent.media_url_https + ':large'
-            }).append(
-                $("<img/>", {
-                    src: ent.media_url_https + ':small'
+            if (ent.video_info) {
+                let video = $("<video></video>", {
+                    class: 'media media-' + mediaCount,
+                    controls: ''
                 })
-            ));
-            _add_chunk($, tag, ' ')
+                mediaDiv.append(video)
+                for (const variant of ent.video_info.variants) {
+                    video.append($('<source></source>', {
+                        src: variant.url,
+                        type: variant.content_type
+                    }))
+                }
+            } else {
+                mediaDiv.append($("<a></a>", {
+                    href: ent.media_url_https + ':large'
+                }).append(
+                    $("<img/>", {
+                        class: 'media media-' + mediaCount,
+                        src: ent.media_url_https + ':small'
+                    })
+                ))
+            }
         } else {
-            tag.append($("<a></a>", {
-                href: url
-            }).text(chunk))
+            //don't include link to quoted status
+            if (!tweet.quoted_status_id_str || url.indexOf(tweet.quoted_status_id_str) == -1) {
+                tag.append($("<a></a>", {
+                    href: url
+                }).text(chunk))
+            }
         }
     }
-    _add_chunk($, tag, text.substring(offset))
+    _add_chunk($, tag, text.slice(offset).join(''))
 }
 
 function _add_chunk($, tag, text) {
