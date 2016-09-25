@@ -8,11 +8,15 @@ log.level = 'debug'
 
 var tr = nodeRequire('./app/tweet_renderer')
 
-ipcRenderer.on('tweet-arrived', (event, arg) => {
-    for (let i = arg.length - 1; i >= 0; i--) {
-        let tweet = arg[i]
+function getTimelineId(user, tl) {
+    return 'timeline_' + user.data.screen_name + '_' + tl
+}
+
+ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
+    for (let i = tweets.length - 1; i >= 0; i--) {
+        let tweet = tweets[i]
         let tweetDiv = tr.createTweetDiv($, tweet)
-        $(".timeline").append(tweetDiv)
+        $('#' + getTimelineId(user, tl)).append(tweetDiv)
     }
 })
 
@@ -20,22 +24,34 @@ ipcRenderer.on('user-added', (event, user) => {
     log.debug('ipcRenderer user-added called with', user)
     let username = user.data.screen_name
 
-    let homeLink = $('<a></a>', {href: '#' + username + '/home'}).text('Home')
-    let mentionLink = $('<a></a>', {href: '#' + username + '/mentions'}).text('Mentions')
-    let dmLink = $('<a></a>', {href: '#' + username + '/dms'}).text('Direct Messages')
+    let divs = {}
+    for (let tl of ['home', 'mentions', 'dms']) {
+        let div = $('<div></div>', {id: getTimelineId(user, tl), class: 'timeline'})
+        $('#timeline').append(div)
+        divs[tl] = div
+    }
+    $('#timeline').children().hide()
+    divs.home.show()
+
+    let links = {}
+    let linkNames = {home: 'Home', mentions: 'Mentions', dms: 'Direct Messages'}
+    for (let tl of ['home', 'mentions', 'dms']) {
+        let link = $('<a></a>', {href: '#' + username + '/' + tl}).text(linkNames[tl])
+        link.click(function (event) {
+            event.preventDefault()
+            $('#timeline').children().hide()
+            divs[tl].show()
+        })
+        links[tl] = link
+    }
     $('#user_list').append(
         $('<li></li>').text(username),
         $('<ul></ul>').append(
-            $('<li></li>').append(homeLink),
-            $('<li></li>').append(mentionLink),
-            $('<li></li>').append(dmLink)
+            $('<li></li>').append(links.home),
+            $('<li></li>').append(links.mentions),
+            $('<li></li>').append(links.dms)
         )
     )
-
-    for (let typ of ['home', 'mentions', 'dms']) {
-        let div = $('<div></div>', {id: 'timeline_' + username + '_' + typ, class: 'timeline'})
-        $('#timeline').append(div)
-    }
 })
 
 $(document).ready(() => {

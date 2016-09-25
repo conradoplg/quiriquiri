@@ -49,6 +49,8 @@ class User extends EventEmitter {
     loadConfig(config) {
         var all_users = config.users || {}
         this.config = all_users[this.screen_name] || {}
+        this.config.since_id = this.config.since_id || {}
+        this.since_id = this.config.since_id
     }
 
     saveConfig(config) {
@@ -69,19 +71,25 @@ class User extends EventEmitter {
         this._timeout = null
     }
 
-    _loadNewTweets() {
-        assert(this.config)
-        var since_id = this.config.since_id
-        this._loadTweets(since_id, null, null, (err, all_tweets) => {
-            log.debug('_loadTweets callback called with tweet count', all_tweets.length)
-            if (all_tweets.length > 0) {
-                this.config.since_id = all_tweets[0].id_str
-                log.debug('Updated since_id', this.config.since_id)
-            }
-        })
+    markAsRead(tl) {
+        this.config.since_id[tl] = this.since_id[tl]
     }
 
-    _loadTweets(since_id, max_id, all_tweets, callback) {
+    _loadNewTweets() {
+        assert(this.config)
+        var since_id = this.since_id
+        for (let tl of ['home', 'mentions', 'dms']) {
+            this._loadTweets(tl, since_id[tl], null, null, (err, all_tweets) => {
+                log.debug('_loadTweets callback called with tweet count', all_tweets.length)
+                if (all_tweets.length > 0) {
+                    this.since_id[tl] = all_tweets[0].id_str
+                    log.debug('Updated since_id', this.since_id[tl])
+                }
+            })
+        }
+    }
+
+    _loadTweets(tl, since_id, max_id, all_tweets, callback) {
         if (!all_tweets) {
             all_tweets = []
         }
@@ -95,8 +103,14 @@ class User extends EventEmitter {
         if (max_id) {
             args.max_id = max_id
         }
-        log.debug('GET statues/home_timeline', args)
-        this.twit.get('statuses/home_timeline', args)
+        let urls = {
+            home: 'statuses/home_timeline',
+            mentions: 'statuses/mentions_timeline',
+            dms: 'direct_messages'
+        }
+        assert(urls[tl], 'Invalid tl argument :' + tl)
+        log.debug('GET ' + urls[tl], args)
+        this.twit.get(urls[tl], args)
             .catch((err) => {
                 log.debug('caught error')
                 if (callback) {
@@ -121,12 +135,12 @@ class User extends EventEmitter {
                 if (tweets.length > 150) {
                     var new_max_id = tweets[tweets.length - 1].id_str
                     log.debug('new_max_id: ', new_max_id)
-                    this._loadTweets(since_id, new_max_id, all_tweets, callback)
+                    this._loadTweets(tl, since_id, new_max_id, all_tweets, callback)
                 } else {
                     if (callback) {
                         callback(null, all_tweets)
                     }
-                    this.emit('tweets-loaded', all_tweets)
+                    this.emit('tweets-loaded', this, tl, all_tweets)
                 }
             })
     }

@@ -30,6 +30,11 @@ p {
     margin-left: 200px;
 }
 
+.timeline {
+    position: absolute;
+    top: 0px;
+}
+
 .tweet {
     position: relative;
     border-bottom: 1px solid #ccc;

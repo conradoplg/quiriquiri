@@ -114,8 +114,8 @@ quiri.on('user-added', (user) => {
     user.on('load-error', function(err) {
         console.log(err)
     })
-    user.on('tweets-loaded', function(tweets) {
-        win.webContents.send('tweet-arrived', tweets)
+    user.on('tweets-loaded', function(user, tl, tweets) {
+        win.webContents.send('tweet-arrived', user, tl, tweets)
     })
     user.start()
 })
