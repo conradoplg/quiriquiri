@@ -1,7 +1,9 @@
 // In renderer process (web page).
 const {
-    ipcRenderer
+    ipcRenderer,
+    remote
 } = nodeRequire('electron')
+const {Menu, MenuItem} = remote
 const log = nodeRequire('winston')
 log.level = 'debug'
     //console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
@@ -16,7 +18,23 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
     for (let i = tweets.length - 1; i >= 0; i--) {
         let tweet = tweets[i]
         let tweetDiv = tr.createTweetDiv($, tweet)
-        $('#' + getTimelineId(user, tl)).append(tweetDiv)
+        let timelineDiv = $('#' + getTimelineId(user, tl))
+        timelineDiv.append(tweetDiv)
+        tweetDiv.contextmenu(function (event) {
+            event.preventDefault()
+            const menu = new Menu()
+            menu.append(new MenuItem({label: 'Mark this and previous and read', click() {
+                ipcRenderer.emit('mark-as-read', user.data.screen_name, tl, tweet.id_str)
+                timelineDiv.children().each(function (i, elem) {
+                    elem.remove()
+                    if (elem.id == 'tweet_' + tweet.id_str) {
+                        return false
+                    }
+                })
+                $('body').scrollTop(0)
+            }}))
+            menu.popup(remote.getCurrentWindow())
+        })
     }
 })
 

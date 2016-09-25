@@ -16,6 +16,7 @@ function createTweetDiv($, tweet) {
     var user = shownStatus.user
 
     var tweetDiv = $("<div></div>", {
+        id: 'tweet_' + tweet.id_str,
         class: "tweet"
     })
     tweetDiv.append($("<div></div>", {
