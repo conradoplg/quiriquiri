@@ -32,16 +32,16 @@ class QuiriQuiriApp extends EventEmitter {
 
     addUser(token, secret, config) {
         let user = new User(credentials["consumer_key"], credentials["consumer_secret"], token, secret)
-        if (config) {
-            log.debug('Existing user added; loading config')
-            user.loadConfig(config)
-        }
         user.verify((err, user) => {
             if (err) {
                 console.log(err)
             } else {
                 log.debug('user.verify returned', user)
-                this.users[user.data.scren_name] = user
+                if (config) {
+                    log.debug('Existing user added; loading config')
+                    user.loadConfig(config)
+                }
+                this.users[user.data.screen_name] = user
                 this.emit('user-added', user)
                 if (!config) {
                     log.debug('New user added; sending config-changed')

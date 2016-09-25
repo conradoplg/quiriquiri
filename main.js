@@ -24,7 +24,7 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
             event.preventDefault()
             const menu = new Menu()
             menu.append(new MenuItem({label: 'Mark this and previous and read', click() {
-                ipcRenderer.emit('mark-as-read', user.data.screen_name, tl, tweet.id_str)
+                ipcRenderer.send('mark-as-read', user, tl, tweet.id_str)
                 timelineDiv.children().each(function (i, elem) {
                     elem.remove()
                     if (elem.id == 'tweet_' + tweet.id_str) {

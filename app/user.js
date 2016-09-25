@@ -51,13 +51,15 @@ class User extends EventEmitter {
     }
 
     loadConfig(config) {
+        assert(this.screen_name, 'User has not been verified yet')
         var all_users = config.users || {}
         this.config = all_users[this.screen_name] || {}
         this.config.since_id = this.config.since_id || {}
-        this.since_id = this.config.since_id
+        this.since_id = Object.assign({}, this.config.since_id)
     }
 
     saveConfig(config) {
+        assert(this.screen_name, 'User has not been verified yet')
         config.users = config.users || {}
         config.users[this.screen_name] = this.config
     }
@@ -75,16 +77,16 @@ class User extends EventEmitter {
         this._timeout = null
     }
 
-    markAsRead(tl) {
-        this.config.since_id[tl] = this.since_id[tl]
+    markAsRead(tl, id_str) {
+        log.debug('user.markAsRead called with', [tl, id_str])
+        this.config.since_id[tl] = id_str
         this.emit('config-changed', this)
     }
 
     _loadNewTweets() {
         assert(this.config)
-        var since_id = this.since_id
         for (let tl of ['home', 'mentions', 'dms']) {
-            this._loadTweets(tl, since_id[tl], null, null, (err, all_tweets) => {
+            this._loadTweets(tl, this.since_id[tl], null, null, (err, all_tweets) => {
                 log.debug('_loadTweets callback called with tweet count', all_tweets.length)
                 if (all_tweets.length > 0) {
                     this.since_id[tl] = all_tweets[0].id_str

@@ -129,6 +129,11 @@ ipcMain.on('main-ready', () => {
     quiri.loadConfig(config)
 })
 
+ipcMain.on('mark-as-read', (event, user, tl, id_str) => {
+    //XXX: 'user' does not work here, why?
+    quiri.users[user.data.screen_name].markAsRead(tl, id_str)
+})
+
 quiri.on('user-added', (user) => {
     log.debug('quiri.on user-added called with', user)
     win.webContents.send('user-added', user)
