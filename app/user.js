@@ -29,6 +29,10 @@ class User extends EventEmitter {
             timeout_ms: 5 * 1000,
         })
         this.config = {}
+        this.config = {since_id: {}}
+        this.config.token = token
+        this.config.secret = secret
+        this.since_id = {}
     }
 
     verify(callback) {
@@ -73,6 +77,7 @@ class User extends EventEmitter {
 
     markAsRead(tl) {
         this.config.since_id[tl] = this.since_id[tl]
+        this.emit('config-changed', this)
     }
 
     _loadNewTweets() {

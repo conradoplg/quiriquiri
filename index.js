@@ -21,6 +21,7 @@ const {
 let win
 
 function createWindow() {
+
     // Create the browser window.
     win = new BrowserWindow({
         width: 1600,
@@ -105,7 +106,27 @@ ipcMain.on('add-user', () => {
 })
 
 ipcMain.on('main-ready', () => {
-    quiri.loadConfig({users: {conradoplg: {token: 'token', secret: 'secret'}}})
+    quiri.on('config-changed', () => {
+        log.debug('quiri.on config-changed called')
+        let config = {}
+        log.debug('saving config...')
+        quiri.saveConfig(config)
+        log.debug('writing to file...')
+        fs.writeFileSync('config.json', JSON.stringify(config, null, 4))
+    })
+
+    let config
+    try {
+        config = JSON.parse(fs.readFileSync('config.json', 'utf8'))
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            log.info('Config file not found, loading empty config')
+            config = {}
+        } else {
+            throw err;
+        }
+    }
+    quiri.loadConfig(config)
 })
 
 quiri.on('user-added', (user) => {

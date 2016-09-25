@@ -88,7 +88,6 @@ function createTextDiv($, tag, tweet) {
         }
     }
     ents.sort((a, b) => a[0] - b[0])
-    log.debug('Entities: ', ents)
 
     var text = Array.from(tweet.full_text || tweet.text)
     var offset = 0
