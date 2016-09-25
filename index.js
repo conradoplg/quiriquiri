@@ -1,38 +1,13 @@
+const log = require('winston')
+log.level = 'debug'
+
 var secret = require('./secret')
+var QuiriQuiriApp = require('./app/app').QuiriQuiriApp
 var TwitterAuthorization = require('./app/authorization').TwitterAuthorization
+var quiri = new QuiriQuiriApp()
 
-var Twit = require('twit')
-
-var T = new Twit({
-    consumer_key: secret["consumer_key"],
-    consumer_secret: secret["consumer_secret"],
-    access_token: secret["access_token"],
-    access_token_secret: secret["access_token_secret"],
-    timeout_ms: 60 * 1000, // optional HTTP request timeout to apply to all requests.
-})
-
-
-//T.get('followers/ids', { screen_name: 'conradoplg' },  function (err, data, response) {
-//  console.log(data)
-//})
-
-
-//var stream = T.stream('user', { track: '#apple', language: 'en' })
-//
-//stream.on('tweet', function (tweet) {
-//  console.log(tweet)
-//})
-
-//var tdata
-//
-//T.get('statuses/home_timeline', { count: 10 },  function (err, data, response) {
-////  console.log(data)
-//  console.log(JSON.stringify(data, null, 4));
-//  tdata = data
-//})
 var fs = require('fs');
 var data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
-//console.log(JSON.stringify(data[0], null, 4));
 
 const {
     app,
@@ -48,8 +23,8 @@ let win
 function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
-        width: 800,
-        height: 600
+        width: 1600,
+        height: 800
     })
 
     // and load the index.html of the app.
@@ -73,13 +48,14 @@ function createWindow() {
         if (url.hostname == 'authorize') {
             twitterAuthorization.getAccessToken(url.query, function(error, token, secret) {
                 if (error) {
-                    console.log(JSON.stringify(error))
+                    log.error(JSON.stringify(error))
                 } else {
-                    console.log(`token ${token} secret ${secret}`)
+                    log.debug(`token ${token} secret ${secret}`)
+                    quiri.addUser(token, secret)
                 }
             })
         }
-        win.loadURL(`file://${__dirname}/index.html`)
+        addUserWin.close()
     }, (error) => {
         if (error) console.error('Failed to register protocol')
     })
@@ -112,37 +88,34 @@ app.on('activate', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-ipcMain.on('asynchronous-message', (event, arg) => {
-    console.log(arg) // prints "ping"
-    event.sender.send('asynchronous-reply', data)
-})
-
-ipcMain.on('synchronous-message', (event, arg) => {
-    console.log(arg) // prints "ping"
-    event.returnValue = 'pong'
-})
-
-
 var secret = require('./secret')
-var OAuth = require('mashape-oauth').OAuth;
-var oa = new OAuth({
-    requestUrl: 'https://api.twitter.com/oauth/request_token',
-    accessUrl: 'https://api.twitter.com/oauth/access_token',
-    callback: 'quiriquiri://authorize',
-    consumerKey: secret['consumer_key'],
-    consumerSecret: secret['consumer_secret'],
-    version: "1.0",
-    signatureMethod: 'HMAC-SHA1',
-});
-
 var twitterAuthorization = new TwitterAuthorization('quiriquiri://authorize/', secret['consumer_key'], secret['consumer_secret'])
+var addUserWin = null
 
 ipcMain.on('add-user', () => {
     twitterAuthorization.getRequestToken((error, token, secret) => {
         if (error) {
             console.log(JSON.stringify(error))
         } else {
-            win.loadURL(`https://api.twitter.com/oauth/authenticate?oauth_token=${token}`)
+            addUserWin = new BrowserWindow({parent: win})
+            addUserWin.loadURL(`https://api.twitter.com/oauth/authorize?oauth_token=${token}`)
+            addUserWin.show()
         }
     })
+})
+
+ipcMain.on('main-ready', () => {
+    quiri.loadConfig({users: {conradoplg: {token: 'token', secret: 'secret'}}})
+})
+
+quiri.on('user-added', (user) => {
+    log.debug('quiri.on user-added called with', user)
+    win.webContents.send('user-added', user)
+    user.on('load-error', function(err) {
+        console.log(err)
+    })
+    user.on('tweets-loaded', function(tweets) {
+        win.webContents.send('tweet-arrived', tweets)
+    })
+    user.start()
 })

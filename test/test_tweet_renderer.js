@@ -29,7 +29,6 @@ require("jsdom").env("", function(err, window) {
             div = $("<div></div>")
             tweet = JSON.parse(fs.readFileSync('test/tweet_sample_03.json', 'utf8'));
             tr.createTextDiv($, div, tweet)
-            console.log(div.html())
             assert.strictEqual(div.html().trim(), tweet.html)
         })
     })

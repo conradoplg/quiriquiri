@@ -19,6 +19,17 @@ p {
     padding: 0;
 }
 
+#sidebar {
+    position: absolute;
+    left: 0px;
+    width: 200px;
+    padding: 6px;
+}
+
+#timeline {
+    margin-left: 200px;
+}
+
 .tweet {
     position: relative;
     border-bottom: 1px solid #ccc;

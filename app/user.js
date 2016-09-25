@@ -5,6 +5,8 @@ const EventEmitter = require('events');
 var zpad = require('zpad');
 const log = require('winston')
 var assert = require('assert')
+var sinon = require('sinon')
+var fs = require('fs')
 
 
 function numericalStringCompare(a, b) {
@@ -15,6 +17,10 @@ function numericalStringCompare(a, b) {
 class User extends EventEmitter {
     constructor(consumer_key, consumer_secret, token, secret) {
         super()
+        assert(consumer_key)
+        assert(consumer_secret)
+        assert(token)
+        assert(secret)
         this.twit = new Twit({
             consumer_key: consumer_key,
             consumer_secret: consumer_secret,
@@ -31,9 +37,11 @@ class User extends EventEmitter {
             })
             .catch(callback)
             .then((result) => {
+                log.debug('account/verify_credentials returned', result)
                 this.name = result.data.name
                 this.screen_name = result.data.screen_name
                 this.profile_image_url = result.data.profile_image_url_https
+                this.data = result.data
                 callback(null, this)
             })
     }
@@ -49,21 +57,26 @@ class User extends EventEmitter {
     }
 
     start() {
-        assert(!self._timeout)
-        self._timeout = setInterval(this._loadNewTweets, 90 * 1000)
+        assert(this.config)
+        assert(!this._timeout)
+        setTimeout(() => this._loadNewTweets(), 0)
+        this._timeout = setInterval(() => this._loadNewTweets(), 90 * 1000)
     }
 
     stop() {
-        assert(self._timeout)
-        clearInterval(self._timeout)
-        self._timeout = null
+        assert(this._timeout)
+        clearInterval(this._timeout)
+        this._timeout = null
     }
 
     _loadNewTweets() {
-        since_id = this.config.since_id
-        _loadTweets(since_id, null, null, (err, all_tweets) => {
+        assert(this.config)
+        var since_id = this.config.since_id
+        this._loadTweets(since_id, null, null, (err, all_tweets) => {
+            log.debug('_loadTweets callback called with tweet count', all_tweets.length)
             if (all_tweets.length > 0) {
                 this.config.since_id = all_tweets[0].id_str
+                log.debug('Updated since_id', this.config.since_id)
             }
         })
     }
@@ -108,7 +121,7 @@ class User extends EventEmitter {
                 if (tweets.length > 150) {
                     var new_max_id = tweets[tweets.length - 1].id_str
                     log.debug('new_max_id: ', new_max_id)
-                    this._loadTweets(since_id, new_max_id, all_tweets)
+                    this._loadTweets(since_id, new_max_id, all_tweets, callback)
                 } else {
                     if (callback) {
                         callback(null, all_tweets)
