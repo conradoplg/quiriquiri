@@ -6,7 +6,7 @@ const {
 const {Menu, MenuItem} = remote
 const log = nodeRequire('winston')
 log.level = 'debug'
-    //console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
+var shell = nodeRequire('electron').shell
 
 var tr = nodeRequire('./app/tweet_renderer')
 
@@ -77,5 +77,10 @@ $(document).ready(() => {
         event.preventDefault()
         ipcRenderer.send('add-user')
     })
+    //open links externally by default
+    $(document).on('click', 'a[href^="http"]', function(event) {
+        event.preventDefault();
+        shell.openExternal(this.href);
+    });
     ipcRenderer.send('main-ready')
 })
