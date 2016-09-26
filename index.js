@@ -7,7 +7,6 @@ var TwitterAuthorization = require('./app/authorization').TwitterAuthorization
 var quiri = new QuiriQuiriApp()
 
 var fs = require('fs');
-var data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
 
 const {
     app,
