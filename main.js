@@ -16,25 +16,29 @@ function getTimelineId(user, tl) {
 
 ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
     for (let i = tweets.length - 1; i >= 0; i--) {
-        let tweet = tweets[i]
-        let tweetDiv = tr.createTweetDiv($, tweet)
-        let timelineDiv = $('#' + getTimelineId(user, tl))
-        timelineDiv.append(tweetDiv)
-        tweetDiv.contextmenu(function (event) {
-            event.preventDefault()
-            const menu = new Menu()
-            menu.append(new MenuItem({label: 'Mark this and previous and read', click() {
-                ipcRenderer.send('mark-as-read', user, tl, tweet.id_str)
-                timelineDiv.children().each(function (i, elem) {
-                    elem.remove()
-                    if (elem.id == 'tweet_' + tweet.id_str) {
-                        return false
-                    }
-                })
-                $('body').scrollTop(0)
-            }}))
-            menu.popup(remote.getCurrentWindow())
-        })
+        try {
+            let tweet = tweets[i]
+            let tweetDiv = tr.createTweetDiv($, tweet)
+            let timelineDiv = $('#' + getTimelineId(user, tl))
+            timelineDiv.append(tweetDiv)
+            tweetDiv.contextmenu(function (event) {
+                event.preventDefault()
+                const menu = new Menu()
+                menu.append(new MenuItem({label: 'Mark this and previous and read', click() {
+                    ipcRenderer.send('mark-as-read', user, tl, tweet.id_str)
+                    timelineDiv.children().each(function (i, elem) {
+                        elem.remove()
+                        if (elem.id == 'tweet_' + tweet.id_str) {
+                            return false
+                        }
+                    })
+                    $('body').scrollTop(0)
+                }}))
+                menu.popup(remote.getCurrentWindow())
+            })
+        } catch (err) {
+            console.error(err.stack)
+        }
     }
 })
 

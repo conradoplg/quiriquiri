@@ -25,7 +25,8 @@ function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
         width: 1600,
-        height: 800
+        height: 800,
+        title: 'QuiriQuiri'
     })
 
     // and load the index.html of the app.

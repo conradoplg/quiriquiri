@@ -6,9 +6,11 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
     "start": "electron .",
-    "format": "find . -path ./node_modules -prune -o -name '*.js' -print | xargs js-beautify -r -n"
+    "format": "find . -path ./node_modules -prune -o -name '*.js' -print | xargs js-beautify -r -n",
+    "pack": "build --dir",
+    "dist": "build --win --x64"
   },
-  "author": "",
+  "author": "Conrado P. L. Gouvea",
   "license": "MIT",
   "dependencies": {
     "electron-json-storage": "^2.0.0",
@@ -23,5 +25,9 @@
   "devDependencies": {
     "electron-prebuilt": "^1.2.0",
     "mocha": "^3.0.2"
+  },
+  "build": {
+    "appId": "net.cryptoland.quiriquiri",
+    "category": "Network"
   }
 }

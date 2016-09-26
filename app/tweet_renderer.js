@@ -39,19 +39,26 @@ function createTweetDiv($, tweet) {
     bodyDiv.append(headerDiv)
     headerDiv.append(
         $("<span></span>", {class: 'name'}).text(user["name"]),
-        $("<span></span>", {class: 'username'}).text(" @" + user["screen_name"])
+        ' ',
+        $("<a></a>", {
+            class: 'username', href: 'https://twitter.com/' + user.screen_name
+        }).text("@" + user.screen_name)
     );
     if (retweeterUser !== undefined) {
         headerDiv.append(
             $("<span></span>", {class: 'retweeted-by'}).text(' retweeted by '),
             $("<span></span>", {class: 'name'}).text(retweeterUser["name"]),
-            $("<span></span>", {class: 'username'}).text(" @" + retweeterUser["screen_name"])
+            ' ',
+            $("<a></a>", {
+                class: 'username', href: 'https://twitter.com/' + retweeterUser.screen_name
+            }).text("@" + retweeterUser.screen_name)
         )
     }
-    headerDiv.append($("<a></a>", {
-        href: "https://twitter.com/" + user['scree_name'] + '/status/' + shownStatus.id_str,
+    headerDiv.append(' ', $("<a></a>", {
+        class: 'timestamp',
+        href: "https://twitter.com/" + user.screen_name + '/status/' + tweet.id_str,
         target: '_blank'
-    }).text('#'))
+    }).text(tweet.created_at))
     var tweetP = $("<p></p>")
     createTextDiv($, tweetP, shownStatus)
     bodyDiv.append(tweetP);
@@ -159,15 +166,12 @@ function createTextDiv($, tag, tweet) {
 }
 
 function _add_chunk($, tag, text) {
-    text = text.replace('&gt;', '>')
-    text = text.replace('&lt;', '<')
-    text = text.replace('&amp;', '&')
     var i = 0
     for (const line of text.split('\n')) {
         if (i > 0) {
             tag.append($("<br/>"))
         }
-        tag.append(line.replace(/\n*$/, ""))
+        tag.append(document.createTextNode(line.replace(/\n*$/, "")))
         i++
     }
 }

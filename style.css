@@ -61,7 +61,7 @@ p {
 .tweet .name {
     font-weight: bold;
 }
-.tweet .username {
+.tweet .username, .tweet .timestamp {
     color: gray;
 }
 
