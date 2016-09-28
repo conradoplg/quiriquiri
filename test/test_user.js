@@ -38,7 +38,11 @@ describe("User", function() {
         user.saveConfig(config)
         assert.deepStrictEqual(config, {
             users: {
-                dummy: {since_id: {}}
+                dummy: {
+                    since_id: {},
+                    secret: 'dummykey',
+                    token: 'dummykey'
+                },
             }
         })
 
@@ -57,7 +61,9 @@ describe("User", function() {
             users: {
                 dummy: {
                     home_last_read: '2',
-                    since_id: {}
+                    since_id: {},
+                    secret: 'dummykey',
+                    token: 'dummykey'
                 }
             }
         })

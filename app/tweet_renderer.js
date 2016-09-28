@@ -171,7 +171,8 @@ function _add_chunk($, tag, text) {
         if (i > 0) {
             tag.append($("<br/>"))
         }
-        tag.append(document.createTextNode(line.replace(/\n*$/, "")))
+        // Using tag[0].ownerDocument instead of just 'document' because the latter is not accessible in tests
+        tag.append(tag[0].ownerDocument.createTextNode(line.replace(/\n*$/, "")))
         i++
     }
 }
