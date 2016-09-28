@@ -8,7 +8,7 @@
     "start": "electron .",
     "format": "find . -path ./node_modules -prune -o -name '*.js' -print | xargs js-beautify -r -n",
     "pack": "build --dir",
-    "dist": "build --win --x64"
+    "dist": "build --linux --win --x64"
   },
   "author": "Conrado P. L. Gouvea",
   "license": "MIT",
