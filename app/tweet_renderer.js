@@ -9,11 +9,11 @@ function createTweetDiv($, tweet) {
 
     if (t.retweeted_status) {
         shownStatus = t.retweeted_status
-        retweeterUser = tweet["user"]
+        retweeterUser = tweet.user
     }
     var quotedStatus = shownStatus.quoted_status
     var text = shownStatus.text
-    var user = shownStatus.user
+    var user = shownStatus.user || shownStatus.sender
     var timestamp = new Date(tweet.created_at)
     var now = new Date()
     var options = {
@@ -39,7 +39,7 @@ function createTweetDiv($, tweet) {
         $('<p></p>').append(
             $("<img>", {
                 class: "profile-image",
-                src: user["profile_image_url_https"]
+                src: user.profile_image_url_https
             })
         )
     ))
