@@ -16,6 +16,7 @@ require("jsdom").env("", function(err, window) {
             var div
             var tweet
 
+            //TODO: day rendering depends on the current date; mock it somehow
             div = $("<div></div>")
             tweet = JSON.parse(fs.readFileSync('test/tweet_sample_01.json', 'utf8'));
             tr.createTextDiv($, div, tweet)
@@ -36,6 +37,14 @@ require("jsdom").env("", function(err, window) {
             tr.createTextDiv($, div, tweet)
             assert.strictEqual(div.html().trim(), tweet.html)
         })
-    })
+        it("renders the tweet", function() {
+            var div
+            var tweet
 
-});
+            div = $("<div></div>")
+            tweet = JSON.parse(fs.readFileSync('test/tweet_sample_01.json', 'utf8'));
+            div = tr.createTweetDiv($, tweet)
+            assert.strictEqual(div.html(), tweet.full_html)
+        })
+    })
+})

@@ -14,6 +14,20 @@ function createTweetDiv($, tweet) {
     var quotedStatus = shownStatus.quoted_status
     var text = shownStatus.text
     var user = shownStatus.user
+    var timestamp = new Date(tweet.created_at)
+    var now = new Date()
+    var options = {
+        hour: "2-digit", minute: "2-digit"
+    }
+    if (timestamp.getMonth() != now.getMonth() || timestamp.getDate() != now.getDate()) {
+        options.day = '2-digit'
+        options.month = '2-digit'
+        options.weekday = 'short'
+    }
+    if (timestamp.getFullYear() != now.getFullYear()) {
+        options.year = '2-digit'
+    }
+    var timestampStr = timestamp.toLocaleString(undefined, options)
 
     var tweetDiv = $("<div></div>", {
         id: 'tweet_' + tweet.id_str,
@@ -58,7 +72,7 @@ function createTweetDiv($, tweet) {
         class: 'timestamp',
         href: "https://twitter.com/" + user.screen_name + '/status/' + tweet.id_str,
         target: '_blank'
-    }).text(tweet.created_at))
+    }).text(timestampStr))
     var tweetP = $("<p></p>")
     createTextDiv($, tweetP, shownStatus)
     bodyDiv.append(tweetP);
