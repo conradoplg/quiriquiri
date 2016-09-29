@@ -14,12 +14,20 @@ function getTimelineId(user, tl) {
     return 'timeline_' + user.data.screen_name + '_' + tl
 }
 
+function updateUnreadCount(user, tl) {
+    let timelineDiv = $('#' + getTimelineId(user, tl))
+    let username = user.data.screen_name
+    let count = timelineDiv.children().length
+    let counterStr = ' (' + count + ')'
+    $('#counter_' + username + '_' + tl).text(count == 0 ? '' : counterStr)
+}
+
 ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
+    let timelineDiv = $('#' + getTimelineId(user, tl))
     for (let i = tweets.length - 1; i >= 0; i--) {
         try {
             let tweet = tweets[i]
             let tweetDiv = tr.createTweetDiv($, tweet)
-            let timelineDiv = $('#' + getTimelineId(user, tl))
             timelineDiv.append(tweetDiv)
             tweetDiv.contextmenu(function (event) {
                 event.preventDefault()
@@ -33,6 +41,7 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
                         }
                     })
                     $('body').scrollTop(0)
+                    updateUnreadCount(user, tl)
                 }}))
                 menu.popup(remote.getCurrentWindow())
             })
@@ -40,6 +49,7 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
             console.error(err.stack)
         }
     }
+    updateUnreadCount(user, tl)
 })
 
 ipcRenderer.on('user-added', (event, user) => {
@@ -58,7 +68,10 @@ ipcRenderer.on('user-added', (event, user) => {
     let links = {}
     let linkNames = {home: 'Home', mentions: 'Mentions', dms: 'Direct Messages'}
     for (let tl of ['home', 'mentions', 'dms']) {
-        let link = $('<a></a>', {href: '#' + username + '/' + tl}).text(linkNames[tl])
+        let link = $('<a></a>', {href: '#' + username + '/' + tl}).append(
+            linkNames[tl],
+            $('<span></span>', {id: 'counter_' + username + '_' + tl})
+        )
         link.click(function (event) {
             event.preventDefault()
             $('#timeline').children().hide()
