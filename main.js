@@ -26,6 +26,16 @@ function updateUnreadCount(user, tl) {
     $('#counter_' + username + '_' + tl).text(count == 0 ? '' : counterStr)
 }
 
+function showTweetDialog(initialText, author, replyTo) {
+    $('#modal').show()
+    $('#tweet-dialog-post').prop('disabled', false)
+    $('#tweet-dialog-text').prop('disabled', false)
+    $('#tweet-dialog-text').val(initialText)
+    $('#tweet-dialog-text').focus()
+    $('#tweet-dialog-author').val(author)
+    $('#tweet-dialog-reply-to').val(replyTo)
+}
+
 ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
     let timelineDiv = $('#' + getTimelineId(user, tl))
     for (let i = tweets.length - 1; i >= 0; i--) {
@@ -60,13 +70,8 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
             })
             $('#reply-action-' + tweet.id_str).click(function(event) {
                 event.preventDefault()
-                $('#modal').show()
-                $('#tweet-dialog-post').prop('disabled', false)
-                $('#tweet-dialog-text').prop('disabled', false)
-                $('#tweet-dialog-text').val(tr.getMentions(user.data, tweet).map((username) => '@' + username).join(' ') + ' ')
-                $('#tweet-dialog-text').focus()
-                $('#tweet-dialog-author').val(user.data.screen_name)
-                $('#tweet-dialog-reply-to').val(tweet.id_str)
+                var mentions = tr.getMentions(user.data, tweet).map((username) => '@' + username).join(' ') + ' '
+                showTweetDialog(mentions, user.data.screen_name, tweet.id_str)
             })
         } catch (err) {
             console.error(err.stack)
@@ -113,9 +118,17 @@ ipcRenderer.on('user-added', (event, user) => {
         })
         links[tl] = link
     }
+    let postLink = $('<a></a>', {
+        href: '#' + username + '/post'
+    }).text('Post')
+    postLink.click(function(event) {
+        event.preventDefault()
+        showTweetDialog('', username, '')
+    })
     $('#user_list').append(
         $('<li></li>').text(username),
         $('<ul></ul>').append(
+            $('<li></li>').append(postLink),
             $('<li></li>').append(links.home),
             $('<li></li>').append(links.mentions),
             $('<li></li>').append(links.dms)
