@@ -91,3 +91,47 @@ p {
 .tweet .media-4 {
     max-width: 25%;
 }
+
+.tweet .footer {
+    padding-top: 6px;
+}
+
+.tweet .footer a.action {
+    margin-right: 80px;
+    text-decoration: none;
+}
+
+.tweet .footer .action-icon {
+    width: 24px;
+    height: 24px;
+    fill: #AAB8C2;
+}
+
+.tweet .footer .count {
+    margin-left: 6px;
+}
+
+.tweet .footer * {
+    color: #AAB8C2;
+    vertical-align: middle;
+}
+
+.tweet .footer .reply-action:hover .action-icon {
+    fill: #1DA1F2;
+}
+
+.tweet .footer .retweet-action:hover .count {
+    color: #19CF86;
+}
+
+.tweet .footer .retweet-action:hover .action-icon {
+    fill: #19CF86;
+}
+
+.tweet .footer .like-action:hover .count {
+    color: #E81C4F;
+}
+
+.tweet .footer .like-action:hover .action-icon {
+    fill: #E81C4F;
+}

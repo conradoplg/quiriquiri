@@ -1,6 +1,13 @@
 "use strict"
 
 const log = require('winston')
+const fs = require('fs')
+
+
+var replySvg = fs.readFileSync(`${__dirname}/../images/reply.svg`, 'utf8');
+var retweetSvg = fs.readFileSync(`${__dirname}/../images/retweet.svg`, 'utf8');
+var likeSvg = fs.readFileSync(`${__dirname}/../images/like.svg`, 'utf8');
+
 
 function createTweetDiv($, tweet) {
     var t = tweet;
@@ -90,6 +97,36 @@ function createTweetDiv($, tweet) {
         createTextDiv($, tweetP, quotedStatus)
         quotedDiv.append(tweetP);
     }
+    var footerDiv = $('<div></div>', {class: 'footer'}).append(
+        $('<a></a>', {
+            id: 'reply-action-' + tweet.id_str,
+            href: '#reply-' + tweet.id_str,
+            class: 'action reply-action'
+        }).append(
+            $(replySvg, {}).toggleClass('action-icon')
+        ),
+        $('<a></a>', {
+            id: 'retweet-action-' + tweet.id_str,
+            href: '#retweet-' + tweet.id_str,
+            class: 'action retweet-action'
+        }).append(
+            $(retweetSvg, {}).toggleClass('action-icon'),
+            $('<span></span>', {id: 'retweet-count-' + tweet.id_str, class: 'count'}).text(
+                tweet.retweet_count > 0 ? '' + tweet.retweet_count : ''
+            )
+        ),
+        $('<a></a>', {
+            id: 'like-action-' + tweet.id_str,
+            href: '#like-' + tweet.id_str,
+            class: 'action like-action'
+        }).append(
+            $(likeSvg, {}).toggleClass('action-icon'),
+            $('<span></span>', {id: 'like-count-' + tweet.id_str, class: 'count'}).text(
+                tweet.favorite_count > 0 ? '' + tweet.favorite_count : ''
+            )
+        )
+    )
+    bodyDiv.append(footerDiv)
     return tweetDiv;
 }
 
