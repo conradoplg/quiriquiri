@@ -98,7 +98,9 @@ ipcMain.on('add-user', () => {
         if (error) {
             console.log(JSON.stringify(error))
         } else {
-            addUserWin = new BrowserWindow({parent: win})
+            addUserWin = new BrowserWindow({
+                parent: win
+            })
             addUserWin.loadURL(`https://api.twitter.com/oauth/authorize?oauth_token=${token}`)
             addUserWin.show()
         }

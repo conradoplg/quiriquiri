@@ -14,7 +14,9 @@ describe("User", function() {
         user.screen_name = 'dummy'
         let config = {}
         user.loadConfig(config)
-        assert.deepStrictEqual(user.config, {since_id: {}})
+        assert.deepStrictEqual(user.config, {
+            since_id: {}
+        })
 
         user = new User('dummykey', 'dummykey', 'dummykey', 'dummykey')
         user.screen_name = 'dummy'

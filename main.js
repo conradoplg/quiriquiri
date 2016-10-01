@@ -3,7 +3,10 @@ const {
     ipcRenderer,
     remote
 } = nodeRequire('electron')
-const {Menu, MenuItem} = remote
+const {
+    Menu,
+    MenuItem
+} = remote
 const log = nodeRequire('winston')
 log.level = 'debug'
 var shell = nodeRequire('electron').shell
@@ -29,20 +32,23 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
             let tweet = tweets[i]
             let tweetDiv = tr.createTweetDiv($, tweet)
             timelineDiv.append(tweetDiv)
-            tweetDiv.contextmenu(function (event) {
+            tweetDiv.contextmenu(function(event) {
                 event.preventDefault()
                 const menu = new Menu()
-                menu.append(new MenuItem({label: 'Mark this and previous and read', click() {
-                    ipcRenderer.send('mark-as-read', user, tl, tweet.id_str)
-                    timelineDiv.children().each(function (i, elem) {
-                        elem.remove()
-                        if (elem.id == 'tweet_' + tweet.id_str) {
-                            return false
-                        }
-                    })
-                    $('body').scrollTop(0)
-                    updateUnreadCount(user, tl)
-                }}))
+                menu.append(new MenuItem({
+                    label: 'Mark this and previous and read',
+                    click() {
+                        ipcRenderer.send('mark-as-read', user, tl, tweet.id_str)
+                        timelineDiv.children().each(function(i, elem) {
+                            elem.remove()
+                            if (elem.id == 'tweet_' + tweet.id_str) {
+                                return false
+                            }
+                        })
+                        $('body').scrollTop(0)
+                        updateUnreadCount(user, tl)
+                    }
+                }))
                 menu.popup(remote.getCurrentWindow())
             })
         } catch (err) {
@@ -57,8 +63,11 @@ ipcRenderer.on('user-added', (event, user) => {
     let username = user.data.screen_name
 
     let divs = {}
-    for (let tl of ['home', 'mentions', 'dms']) {
-        let div = $('<div></div>', {id: getTimelineId(user, tl), class: 'timeline'})
+    for (let tl of['home', 'mentions', 'dms']) {
+        let div = $('<div></div>', {
+            id: getTimelineId(user, tl),
+            class: 'timeline'
+        })
         $('#timeline').append(div)
         divs[tl] = div
     }
@@ -66,13 +75,21 @@ ipcRenderer.on('user-added', (event, user) => {
     divs.home.show()
 
     let links = {}
-    let linkNames = {home: 'Home', mentions: 'Mentions', dms: 'Direct Messages'}
+    let linkNames = {
+        home: 'Home',
+        mentions: 'Mentions',
+        dms: 'Direct Messages'
+    }
     for (let tl of ['home', 'mentions', 'dms']) {
-        let link = $('<a></a>', {href: '#' + username + '/' + tl}).append(
+        let link = $('<a></a>', {
+            href: '#' + username + '/' + tl
+        }).append(
             linkNames[tl],
-            $('<span></span>', {id: 'counter_' + username + '_' + tl})
+            $('<span></span>', {
+                id: 'counter_' + username + '_' + tl
+            })
         )
-        link.click(function (event) {
+        link.click(function(event) {
             event.preventDefault()
             $('#timeline').children().hide()
             divs[tl].show()
@@ -96,8 +113,8 @@ $(document).ready(() => {
     })
     //open links externally by default
     $(document).on('click', 'a[href^="http"]', function(event) {
-        event.preventDefault();
-        shell.openExternal(this.href);
-    });
+        event.preventDefault()
+        shell.openExternal(this.href)
+    })
     ipcRenderer.send('main-ready')
 })

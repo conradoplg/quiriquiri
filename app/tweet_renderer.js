@@ -24,7 +24,8 @@ function createTweetDiv($, tweet) {
     var timestamp = new Date(tweet.created_at)
     var now = new Date()
     var options = {
-        hour: "2-digit", minute: "2-digit"
+        hour: "2-digit",
+        minute: "2-digit"
     }
     if (timestamp.getMonth() != now.getMonth() || timestamp.getDate() != now.getDate()) {
         options.day = '2-digit'
@@ -59,19 +60,27 @@ function createTweetDiv($, tweet) {
     })
     bodyDiv.append(headerDiv)
     headerDiv.append(
-        $("<span></span>", {class: 'name'}).text(user["name"]),
+        $("<span></span>", {
+            class: 'name'
+        }).text(user["name"]),
         ' ',
         $("<a></a>", {
-            class: 'username', href: 'https://twitter.com/' + user.screen_name
+            class: 'username',
+            href: 'https://twitter.com/' + user.screen_name
         }).text("@" + user.screen_name)
     );
     if (retweeterUser !== undefined) {
         headerDiv.append(
-            $("<span></span>", {class: 'retweeted-by'}).text(' retweeted by '),
-            $("<span></span>", {class: 'name'}).text(retweeterUser["name"]),
+            $("<span></span>", {
+                class: 'retweeted-by'
+            }).text(' retweeted by '),
+            $("<span></span>", {
+                class: 'name'
+            }).text(retweeterUser["name"]),
             ' ',
             $("<a></a>", {
-                class: 'username', href: 'https://twitter.com/' + retweeterUser.screen_name
+                class: 'username',
+                href: 'https://twitter.com/' + retweeterUser.screen_name
             }).text("@" + retweeterUser.screen_name)
         )
     }
@@ -90,14 +99,20 @@ function createTweetDiv($, tweet) {
         quotedDiv.append($("<p></p>", {
             class: "user"
         }).append(
-            $("<span></span>", {class: 'name'}).text(quotedStatusUser["name"]),
-            $("<span></span>", {class: 'username'}).text(" @" + quotedStatusUser["screen_name"])
+            $("<span></span>", {
+                class: 'name'
+            }).text(quotedStatusUser["name"]),
+            $("<span></span>", {
+                class: 'username'
+            }).text(" @" + quotedStatusUser["screen_name"])
         ))
         tweetP = $("<p></p>")
         createTextDiv($, tweetP, quotedStatus)
         quotedDiv.append(tweetP);
     }
-    var footerDiv = $('<div></div>', {class: 'footer'}).append(
+    var footerDiv = $('<div></div>', {
+        class: 'footer'
+    }).append(
         $('<a></a>', {
             id: 'reply-action-' + tweet.id_str,
             href: '#reply-' + tweet.id_str,
@@ -111,7 +126,10 @@ function createTweetDiv($, tweet) {
             class: 'action retweet-action'
         }).append(
             $(retweetSvg, {}).toggleClass('action-icon'),
-            $('<span></span>', {id: 'retweet-count-' + tweet.id_str, class: 'count'}).text(
+            $('<span></span>', {
+                id: 'retweet-count-' + tweet.id_str,
+                class: 'count'
+            }).text(
                 tweet.retweet_count > 0 ? '' + tweet.retweet_count : ''
             )
         ),
@@ -121,7 +139,10 @@ function createTweetDiv($, tweet) {
             class: 'action like-action'
         }).append(
             $(likeSvg, {}).toggleClass('action-icon'),
-            $('<span></span>', {id: 'like-count-' + tweet.id_str, class: 'count'}).text(
+            $('<span></span>', {
+                id: 'like-count-' + tweet.id_str,
+                class: 'count'
+            }).text(
                 tweet.favorite_count > 0 ? '' + tweet.favorite_count : ''
             )
         )
@@ -179,7 +200,9 @@ function createTextDiv($, tag, tweet) {
         }
         if (typ == 'media') {
             if (!mediaDiv) {
-                mediaDiv = $("<div></div>", {class: 'media-set'})
+                mediaDiv = $("<div></div>", {
+                    class: 'media-set'
+                })
                 tag.append(mediaDiv)
             }
             if (ent.video_info) {
