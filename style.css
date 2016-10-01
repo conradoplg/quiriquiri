@@ -4,7 +4,7 @@
           box-sizing: border-box;
 }
 
-body {
+body, textarea {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 14px;
     line-height: 18px;
@@ -134,4 +134,46 @@ p {
 
 .tweet .footer .like-action:hover .action-icon {
     fill: #E81C4F;
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background: #FFF;
+    margin: 15% auto;
+    width: 80%;
+    padding: 12px;
+    border-radius: 5px;
+}
+
+#tweet-dialog textarea {
+    width: 100%;
+    height: 6em;
+}
+
+#error {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    width: 80%;
+    top: 0;
+    margin: 24px auto;
+    background-color: #efcece;
+    overflow: auto;
+    max-height: 12em;
+    padding: 12px;
+    border-radius: 5px;
 }

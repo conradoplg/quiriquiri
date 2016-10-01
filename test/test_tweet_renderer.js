@@ -56,5 +56,25 @@ require("jsdom").env("", function(err, window) {
             div = tr.createTweetDiv($, tweet)
             assert.strictEqual(div.html(), tweet.full_html)
         })
+        it("gets mentions", function() {
+            var tweet
+            var mentions
+
+            tweet = JSON.parse(fs.readFileSync('test/tweet_sample_01.json', 'utf8'));
+            mentions = tr.getMentions({screen_name: 'myself'}, tweet)
+            assert.deepStrictEqual(mentions, ['planet4589', 'NASAJuno'])
+
+            tweet = JSON.parse(fs.readFileSync('test/tweet_sample_01.json', 'utf8'));
+            mentions = tr.getMentions({screen_name: 'NASAJuno'}, tweet)
+            assert.deepStrictEqual(mentions, ['planet4589'])
+
+            tweet = JSON.parse(fs.readFileSync('test/tweet_sample_01.json', 'utf8'));
+            mentions = tr.getMentions({screen_name: 'planet4589'}, tweet)
+            assert.deepStrictEqual(mentions, ['NASAJuno'])
+
+            tweet = JSON.parse(fs.readFileSync('test/tweet_sample_02.json', 'utf8'));
+            mentions = tr.getMentions({screen_name: 'myself'}, tweet)
+            assert.deepStrictEqual(mentions, ['HackersClothing', 'iotcert'])
+        })
     })
 })

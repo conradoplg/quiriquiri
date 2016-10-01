@@ -83,6 +83,27 @@ class User extends EventEmitter {
         this.emit('config-changed', this)
     }
 
+    postTweet(text, replyTo) {
+        log.debug('user.postTweet called with', [text, replyTo])
+        var args = {
+            status: text
+        }
+        if (replyTo) {
+            args.in_reply_to_status_id = replyTo
+        }
+        this.twit.post('statuses/update', args)
+        .catch((err) => {
+            log.debug('caught error', err)
+            this.emit('post-tweet-error', err)
+        }).then((result) => {
+            if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
+                this.emit('post-tweet-error', result.data)
+                return
+            }
+            this.emit('tweet-posted', this, result.data)
+        })
+    }
+
     _loadNewTweets() {
         assert(this.config)
         for (let tl of ['home', 'mentions', 'dms']) {

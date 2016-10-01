@@ -110,4 +110,32 @@ describe("User", function() {
         })
         user._loadNewTweets()
     })
+    it('posts tweets', function(done) {
+        this.timeout(1000)
+        let user = new User('dummykey', 'dummykey', 'dummykey', 'dummykey')
+        let data = JSON.parse(fs.readFileSync('data.json', 'utf8'))
+        let stub = sinon.stub(user.twit, 'post')
+        stub.withArgs('statuses/update').onCall(0).returns(
+            new Promise(function (resolve, reject) {
+                resolve({data: data[0], resp: {statusCode: 200}})
+        }))
+        user.on('tweet-posted', (user, tweet) => {
+            done()
+        })
+        user.postTweet('test', null)
+    })
+    it('replies tweets', function(done) {
+        this.timeout(1000)
+        let user = new User('dummykey', 'dummykey', 'dummykey', 'dummykey')
+        let data = JSON.parse(fs.readFileSync('data.json', 'utf8'))
+        let stub = sinon.stub(user.twit, 'post')
+        stub.withArgs('statuses/update').onCall(0).returns(
+            new Promise(function (resolve, reject) {
+                resolve({data: data[0], resp: {statusCode: 200}})
+        }))
+        user.on('tweet-posted', (user, tweet) => {
+            done()
+        })
+        user.postTweet('test', '1')
+    })
 })

@@ -145,5 +145,16 @@ quiri.on('user-added', (user) => {
     user.on('tweets-loaded', function(user, tl, tweets) {
         win.webContents.send('tweet-arrived', user, tl, tweets)
     })
+    user.on('tweet-posted', (user, tweet) => {
+        win.webContents.send('tweet-posted', user, tweet)
+    })
+    user.on('post-tweet-error', (err) => {
+        win.webContents.send('post-tweet-error', err)
+    })
     user.start()
 })
+
+ipcMain.on('post-tweet', (event, text, author, replyTo) => {
+    quiri.postTweet(text, author, replyTo)
+})
+

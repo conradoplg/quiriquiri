@@ -19,7 +19,7 @@ class QuiriQuiriApp extends EventEmitter {
             try {
                 this.addUser(userConfig.token, userConfig.secret, config)
             } catch (err) {
-                log.error('Error loading user', [username, err])
+                log.error('Error loading user', [username, err.stack])
             }
         }
     }
@@ -53,6 +53,10 @@ class QuiriQuiriApp extends EventEmitter {
             log.debug('user.on config-changed called for', user.data.screen_name)
             this.emit('config-changed')
         })
+    }
+
+    postTweet(text, author, replyTo) {
+        this.users[author].postTweet(text, replyTo)
     }
 }
 

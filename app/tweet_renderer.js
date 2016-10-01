@@ -9,10 +9,30 @@ var retweetSvg = fs.readFileSync(`${__dirname}/../images/retweet.svg`, 'utf8');
 var likeSvg = fs.readFileSync(`${__dirname}/../images/like.svg`, 'utf8');
 
 
+function getMentions(user, tweet) {
+    var m = []
+    var shownStatus = tweet
+
+    if (tweet.retweeted_status) {
+        m.push(tweet.retweeted_status.user.screen_name)
+        shownStatus = tweet.retweeted_status
+    }
+    m.push(tweet.user.screen_name)
+    if (shownStatus.entities && shownStatus.entities.user_mentions) {
+        for (let mention of shownStatus.entities.user_mentions) {
+            if (m.indexOf(mention.screen_name) == -1) {
+                m.push(mention.screen_name)
+            }
+        }
+    }
+    return m.filter((screen_name) => screen_name != user.screen_name)
+}
+
 function createTweetDiv($, tweet) {
     var t = tweet;
     var shownStatus = tweet;
     var retweeterUser;
+    var mentions = []
 
     if (t.retweeted_status) {
         shownStatus = t.retweeted_status
@@ -254,3 +274,4 @@ function _add_chunk($, tag, text) {
 
 module.exports.createTextDiv = createTextDiv
 module.exports.createTweetDiv = createTweetDiv
+module.exports.getMentions = getMentions

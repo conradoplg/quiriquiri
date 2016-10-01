@@ -1,7 +1,8 @@
 // In renderer process (web page).
 const {
     ipcRenderer,
-    remote
+    remote,
+    clipboard
 } = nodeRequire('electron')
 const {
     Menu,
@@ -49,7 +50,23 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
                         updateUnreadCount(user, tl)
                     }
                 }))
+                menu.append(new MenuItem({
+                    label: 'Copy JSON',
+                    click() {
+                        clipboard.writeText(JSON.stringify(tweet, null, 4))
+                    }
+                }))
                 menu.popup(remote.getCurrentWindow())
+            })
+            $('#reply-action-' + tweet.id_str).click(function(event) {
+                event.preventDefault()
+                $('#modal').show()
+                $('#tweet-dialog-post').prop('disabled', false)
+                $('#tweet-dialog-text').prop('disabled', false)
+                $('#tweet-dialog-text').val(tr.getMentions(user.data, tweet).map((username) => '@' + username).join(' ') + ' ')
+                $('#tweet-dialog-text').focus()
+                $('#tweet-dialog-author').val(user.data.screen_name)
+                $('#tweet-dialog-reply-to').val(tweet.id_str)
             })
         } catch (err) {
             console.error(err.stack)
@@ -106,6 +123,16 @@ ipcRenderer.on('user-added', (event, user) => {
     )
 })
 
+ipcRenderer.on('tweet-posted', (event, user, tweet) => {
+    $('#modal').hide()
+})
+
+ipcRenderer.on('post-tweet-error', (event, err) => {
+    $('#modal').hide()
+    $("#error-text").empty().append(document.createTextNode(JSON.stringify(err)))
+    $("#error").show().delay(5000).fadeOut()
+})
+
 $(document).ready(() => {
     $('#add_user').click(function(event) {
         event.preventDefault()
@@ -115,6 +142,20 @@ $(document).ready(() => {
     $(document).on('click', 'a[href^="http"]', function(event) {
         event.preventDefault()
         shell.openExternal(this.href)
+    })
+    $(window).on('click', function(event) {
+        event.preventDefault()
+        if (event.target == document.getElementById('modal')) {
+            $('#modal').hide()
+        }
+    })
+    $('#tweet-dialog-post').on('click', function(event) {
+        event.preventDefault()
+        $('#tweet-dialog-post').prop('disabled', true)
+        $('#tweet-dialog-text').prop('disabled', true)
+        setTimeout(() => {
+            ipcRenderer.send('post-tweet', $('#tweet-dialog-text').val(), $('#tweet-dialog-author').val(), $('#tweet-dialog-reply-to').val())
+        }, 2000)
     })
     ipcRenderer.send('main-ready')
 })
