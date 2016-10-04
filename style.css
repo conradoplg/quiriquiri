@@ -128,11 +128,19 @@ p {
     fill: #19CF86;
 }
 
+.tweet .footer .retweet-action.retweeted .action-icon {
+    fill: #19CF86;
+}
+
 .tweet .footer .like-action:hover .count {
     color: #E81C4F;
 }
 
 .tweet .footer .like-action:hover .action-icon {
+    fill: #E81C4F;
+}
+
+.tweet .footer .like-action.liked .action-icon {
     fill: #E81C4F;
 }
 

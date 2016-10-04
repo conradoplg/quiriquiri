@@ -139,11 +139,11 @@ ipcMain.on('mark-as-read', (event, user, tl, id_str) => {
 quiri.on('user-added', (user) => {
     log.debug('quiri.on user-added called with', user)
     win.webContents.send('user-added', user)
-    user.on('load-error', function(err) {
-        console.log(err)
-    })
     user.on('tweets-loaded', function(user, tl, tweets) {
         win.webContents.send('tweet-arrived', user, tl, tweets)
+    })
+    user.on('load-error', function(err) {
+        console.log(err)
     })
     user.on('tweet-posted', (user, tweet) => {
         win.webContents.send('tweet-posted', user, tweet)
@@ -151,10 +151,29 @@ quiri.on('user-added', (user) => {
     user.on('post-tweet-error', (err) => {
         win.webContents.send('post-tweet-error', err)
     })
+    user.on('liked', (user, tweetId) => {
+        win.webContents.send('liked', user, tweetId)
+    })
+    user.on('like-error', (err, tweetId) => {
+        win.webContents.send('like-error', err, tweetId)
+    })
+    user.on('retweeted', (user, tweetId) => {
+        win.webContents.send('retweeted', user, tweetId)
+    })
+    user.on('retweet-error', (err, tweetId) => {
+        win.webContents.send('retweet-error', err, tweetId)
+    })
     user.start()
 })
 
 ipcMain.on('post-tweet', (event, text, author, replyTo) => {
-    quiri.postTweet(text, author, replyTo)
+    quiri.users[user.data.screen_name].postTweet(text, replyTo)
 })
 
+ipcMain.on('retweet', (event, user, id) => {
+    quiri.users[user.data.screen_name].retweet(id)
+})
+
+ipcMain.on('like', (event, user, id) => {
+    quiri.users[user.data.screen_name].like(id)
+})

@@ -104,6 +104,35 @@ class User extends EventEmitter {
         })
     }
 
+    retweet(id) {
+        this.twit.post('statuses/retweet/:id', {id: id})
+        .catch((err) => {
+            log.debug('caught error', err)
+            this.emit('retweet-error', err, id)
+        }).then((result) => {
+            if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
+                this.emit('retweet-error', result.data)
+                return
+            }
+            this.emit('retweeted', this, id)
+        })
+    }
+
+    like(id) {
+        this.twit.post('favorites/create', {id: id})
+        .catch((err) => {
+            log.debug('caught error', err)
+            this.emit('like-error', err, id)
+        }).then((result) => {
+            if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
+                log.debug('like error', result.data)
+                this.emit('like-error', result.data)
+                return
+            }
+            this.emit('liked', this, id)
+        })
+    }
+
     _loadNewTweets() {
         assert(this.config)
         for (let tl of ['home', 'mentions', 'dms']) {

@@ -73,6 +73,14 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
                 var mentions = tr.getMentions(user.data, tweet).map((username) => '@' + username).join(' ') + ' '
                 showTweetDialog(mentions, user.data.screen_name, tweet.id_str)
             })
+            $('#retweet-action-' + tweet.id_str).click(function(event) {
+                event.preventDefault()
+                ipcRenderer.send('retweet', user, tweet.id_str)
+            })
+            $('#like-action-' + tweet.id_str).click(function(event) {
+                event.preventDefault()
+                ipcRenderer.send('like', user, tweet.id_str)
+            })
         } catch (err) {
             console.error(err.stack)
         }
@@ -136,15 +144,29 @@ ipcRenderer.on('user-added', (event, user) => {
     )
 })
 
+function defaultErrorHandler(event, err) {
+    $('#modal').hide()
+    $("#error-text").empty().append(document.createTextNode(JSON.stringify(err)))
+    $("#error").show().delay(5000).fadeOut()
+}
+
 ipcRenderer.on('tweet-posted', (event, user, tweet) => {
     $('#modal').hide()
 })
 
-ipcRenderer.on('post-tweet-error', (event, err) => {
-    $('#modal').hide()
-    $("#error-text").empty().append(document.createTextNode(JSON.stringify(err)))
-    $("#error").show().delay(5000).fadeOut()
+ipcRenderer.on('post-tweet-error', defaultErrorHandler)
+
+ipcRenderer.on('liked', (event, user, tweetId) => {
+    $('#like-action-' + tweetId).toggleClass('liked')
 })
+
+ipcRenderer.on('like-error', defaultErrorHandler)
+
+ipcRenderer.on('retweeted', (event, user, tweetId) => {
+    $('#retweet-action-' + tweetId).toggleClass('retweeted')
+})
+
+ipcRenderer.on('retweet-error', defaultErrorHandler)
 
 $(document).ready(() => {
     $('#add_user').click(function(event) {

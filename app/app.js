@@ -54,10 +54,6 @@ class QuiriQuiriApp extends EventEmitter {
             this.emit('config-changed')
         })
     }
-
-    postTweet(text, author, replyTo) {
-        this.users[author].postTweet(text, replyTo)
-    }
 }
 
 module.exports.QuiriQuiriApp = QuiriQuiriApp

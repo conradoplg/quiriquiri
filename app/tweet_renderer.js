@@ -143,7 +143,7 @@ function createTweetDiv($, tweet) {
         $('<a></a>', {
             id: 'retweet-action-' + tweet.id_str,
             href: '#retweet-' + tweet.id_str,
-            class: 'action retweet-action'
+            class: 'action retweet-action' + (tweet.retweeted ? ' retweeted' : '')
         }).append(
             $(retweetSvg, {}).toggleClass('action-icon'),
             $('<span></span>', {
@@ -156,7 +156,7 @@ function createTweetDiv($, tweet) {
         $('<a></a>', {
             id: 'like-action-' + tweet.id_str,
             href: '#like-' + tweet.id_str,
-            class: 'action like-action'
+            class: 'action like-action' + (tweet.favorited ? ' liked' : '')
         }).append(
             $(likeSvg, {}).toggleClass('action-icon'),
             $('<span></span>', {
