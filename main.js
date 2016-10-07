@@ -14,6 +14,9 @@ var shell = nodeRequire('electron').shell
 
 var tr = nodeRequire('./app/tweet_renderer')
 
+
+var usernameMap = {}
+
 function getTimelineId(user, tl) {
     return 'timeline_' + user.data.screen_name + '_' + tl
 }
@@ -81,6 +84,9 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
                 event.preventDefault()
                 ipcRenderer.send('like', user, tweet.id_str)
             })
+            usernameMap[tweet.user.screen_name] = {
+                value: tweet.user.screen_name, label: tweet.user.name, img: tweet.user.profile_image_url_https
+            }
         } catch (err) {
             console.error(err.stack)
         }
@@ -192,5 +198,56 @@ $(document).ready(() => {
             ipcRenderer.send('post-tweet', $('#tweet-dialog-text').val(), $('#tweet-dialog-author').val(), $('#tweet-dialog-reply-to').val())
         }, 2000)
     })
+    $("#tweet-dialog-text")
+    .on( "keydown", function( event ) {
+        // don't navigate away from the field on tab when selecting an item
+        if (event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+            event.preventDefault();
+        }
+    }).autocomplete({
+        minLength: 0,
+        autoFocus: true,
+        delay: 0,
+        position: { my : "right top", at: "right bottom" },
+        source: function(request, response) {
+            var txt = request.term.substring(0, $("#tweet-dialog-text")[0].selectionStart)
+            var matches = /@[\S]+$/.exec(txt)
+            if (matches) {
+                arr = []
+                for (let u in usernameMap) {
+                    if (usernameMap[u].value.startsWith(matches[0].substring(1))) {
+                        arr.push(usernameMap[u])
+                    }
+                }
+                response(arr)
+            } else {
+                response([])
+            }
+        },
+        focus: function() {
+            // prevent value inserted on focus
+            return false
+        },
+        select: function(event, ui) {
+            var before = this.value.substring(0, $("#tweet-dialog-text")[0].selectionStart)
+            var after = this.value.substring($("#tweet-dialog-text")[0].selectionStart)
+            var newBefore = before.replace(/@[\S]+$/, '@' + ui.item.value)
+            this.value = newBefore + ' ' + after
+            this.setSelectionRange(newBefore.length + 1, newBefore.length + 1);
+            $(this).autocomplete('close')
+            return false;
+        }
+    }).autocomplete('instance')._renderItem = function(ul, item) {
+        return $('<li>', {class: 'user-item'}).append(
+            $('<img>', {src: usernameMap[item.value].img}),
+            $("<span></span>", {
+                class: 'name'
+            }).text(item.label),
+            ' ',
+            $("<span></span>", {
+                class: 'username'
+            }).text("@" + item.value)
+        ).appendTo(ul)
+    }
     ipcRenderer.send('main-ready')
 })

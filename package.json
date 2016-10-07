@@ -15,6 +15,7 @@
   "dependencies": {
     "electron-json-storage": "^2.0.0",
     "jquery": "^3.1.0",
+    "jquery-ui-dist": "^1.12.1",
     "jsdom": "^9.5.0",
     "mashape-oauth": "^0.1.71",
     "sinon": "^1.17.6",
