@@ -174,6 +174,15 @@ ipcRenderer.on('retweeted', (event, user, tweetId) => {
 
 ipcRenderer.on('retweet-error', defaultErrorHandler)
 
+
+ipcRenderer.on('friends-loaded', (event, user, friends) => {
+    for (let f of friends) {
+        usernameMap[f.screen_name] = {
+            value: f.screen_name, label: f.name, img: f.profile_image_url_https
+        }
+    }
+})
+
 $(document).ready(() => {
     $('#add_user').click(function(event) {
         event.preventDefault()
@@ -214,8 +223,12 @@ $(document).ready(() => {
             var matches = /@[\S]+$/.exec(txt)
             if (matches) {
                 arr = []
+                var search = matches[0].substring(1)
                 for (let u in usernameMap) {
-                    if (usernameMap[u].value.startsWith(matches[0].substring(1))) {
+                    if (usernameMap[u].value.indexOf(search) != -1
+                       || usernameMap[u].value.toLowerCase().indexOf(search) != -1
+                       || usernameMap[u].label.indexOf(search) != -1
+                       || usernameMap[u].label.toLowerCase().indexOf(search) != -1) {
                         arr.push(usernameMap[u])
                     }
                 }

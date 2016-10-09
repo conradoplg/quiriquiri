@@ -65,16 +65,19 @@ class User extends EventEmitter {
     }
 
     start() {
+        log.debug('user.start')
         assert(this.config)
         assert(!this._timeout)
         setTimeout(() => this._loadNewTweets(), 0)
         this._timeout = setInterval(() => this._loadNewTweets(), 90 * 1000)
+        setTimeout(() => this.loadFriends(), 0)
     }
 
     stop() {
         assert(this._timeout)
         clearInterval(this._timeout)
         this._timeout = null
+        this._stream.stop()
     }
 
     markAsRead(tl, id_str) {
@@ -131,6 +134,10 @@ class User extends EventEmitter {
             }
             this.emit('liked', this, id)
         })
+    }
+
+    loadFriends() {
+        this._loadFriends(null, '-1')
     }
 
     _loadNewTweets() {
@@ -198,6 +205,42 @@ class User extends EventEmitter {
                         callback(null, all_tweets)
                     }
                     this.emit('tweets-loaded', this, tl, all_tweets)
+                }
+            })
+    }
+
+    _loadFriends(all_friends, cursor, callback) {
+        if (!all_friends) {
+            all_friends = []
+        }
+        var args = {
+            count: 200,
+            cursor: cursor
+        }
+        log.debug('GET friends/list', args)
+        this.twit.get('friends/list', args)
+            .catch((err) => {
+                log.debug('caught error')
+                if (callback) {
+                    callback(err)
+                }
+                this.emit('load-friend-error', err)
+            })
+            .then((result) => {
+                var friends = result.data.users
+                if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
+                    this.emit('load-friend-error', result.data)
+                    return
+                }
+                log.debug('Friends returned: ', friends.length)
+                all_friends = all_friends.concat(friends)
+                if (result.data.next_cursor_str != '0') {
+                    this._loadFriends(all_friends, result.data.next_cursor_str, callback)
+                } else {
+                    if (callback) {
+                        callback(null, all_friends)
+                    }
+                    this.emit('friends-loaded', this, all_friends)
                 }
             })
     }

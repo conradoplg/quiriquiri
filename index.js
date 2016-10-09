@@ -145,6 +145,12 @@ quiri.on('user-added', (user) => {
     user.on('load-error', function(err) {
         console.log(err)
     })
+    user.on('friends-loaded', function(user, friends) {
+        win.webContents.send('friends-loaded', user, friends)
+    })
+    user.on('load-friend-error', function(err) {
+        console.log(err)
+    })
     user.on('tweet-posted', (user, tweet) => {
         win.webContents.send('tweet-posted', user, tweet)
     })
