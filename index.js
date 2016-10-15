@@ -25,7 +25,8 @@ function createWindow() {
     win = new BrowserWindow({
         width: 1600,
         height: 800,
-        title: 'QuiriQuiri'
+        title: 'QuiriQuiri',
+        icon: `${__dirname}/resources/icons/64x64/quiriquiri.png`
     })
 
     // and load the index.html of the app.

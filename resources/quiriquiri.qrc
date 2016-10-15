@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="images">
+    <file>icons/16x16/quiriquiri.png</file>
+    <file>icons/32x32/quiriquiri.png</file>
+    <file>icons/48x48/quiriquiri.png</file>
+    <file>icons/256x256/quiriquiri.png</file>
+  </qresource>
+</RCC>

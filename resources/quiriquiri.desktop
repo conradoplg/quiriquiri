@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=QuiriQuiri
+GenericName=Twitter client
+TryExec=quiriquiri
+Exec=quiriquiri
+Icon=quiriquiri
+Type=Application
+Categories=Network;News;QT
+X-Ubuntu-Gettext-Domain=quiriquiri
