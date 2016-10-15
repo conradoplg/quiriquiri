@@ -36,7 +36,7 @@ class QuiriQuiriApp extends EventEmitter {
             if (err) {
                 console.log(err)
             } else {
-                log.debug('user.verify returned', user)
+                log.debug('user.verify returned', user.data)
                 if (config) {
                     log.debug('Existing user added; loading config')
                     user.loadConfig(config)

@@ -41,7 +41,7 @@ class User extends EventEmitter {
             })
             .catch(callback)
             .then((result) => {
-                log.debug('account/verify_credentials returned', result)
+                log.debug('account/verify_credentials returned', [result.data, result.resp.statusCode])
                 this.name = result.data.name
                 this.screen_name = result.data.screen_name
                 this.profile_image_url = result.data.profile_image_url_https
