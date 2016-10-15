@@ -248,8 +248,9 @@ function createTextDiv($, tag, tweet) {
                 ))
             }
         } else {
+            //TODO: use metadata to decide this
             //don't include link to quoted status
-            if (!tweet.quoted_status_id_str || url.indexOf(tweet.quoted_status_id_str) == -1) {
+            if (!tweet.quoted_status || url.indexOf(tweet.quoted_status_id_str) == -1) {
                 tag.append($("<a></a>", {
                     href: url
                 }).text(chunk))
