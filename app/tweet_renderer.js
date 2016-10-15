@@ -109,12 +109,15 @@ function createTweetDiv($, tweet) {
         href: "https://twitter.com/" + user.screen_name + '/status/' + tweet.id_str,
         target: '_blank'
     }).text(timestampStr))
-    var tweetP = $("<p></p>")
+    var tweetP = $("<p></p>", {class: 'tweet-text'})
     createTextDiv($, tweetP, shownStatus)
     bodyDiv.append(tweetP);
     if (quotedStatus !== undefined) {
-        var quotedStatusUser = quotedStatus["user"];
-        var quotedDiv = $("<blockquote></blockquote>")
+        var quotedStatusUser = quotedStatus.user;
+        var quotedDiv = $("<blockquote></blockquote>", {
+            class: 'quoted-tweet',
+            'data-href': "https://twitter.com/" + quotedStatusUser.screen_name + '/status/' + quotedStatus.id_str,
+        })
         bodyDiv.append(quotedDiv)
         quotedDiv.append($("<p></p>", {
             class: "user"
@@ -126,7 +129,7 @@ function createTweetDiv($, tweet) {
                 class: 'username'
             }).text(" @" + quotedStatusUser["screen_name"])
         ))
-        tweetP = $("<p></p>")
+        tweetP = $("<p></p>", {class: 'tweet-text'})
         createTextDiv($, tweetP, quotedStatus)
         quotedDiv.append(tweetP);
     }

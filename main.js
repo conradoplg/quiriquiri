@@ -190,8 +190,13 @@ $(document).ready(() => {
     })
     //open links externally by default
     $(document).on('click', 'a[href^="http"]', function(event) {
-        event.preventDefault()
+        event.preventDefault();
+        event.stopPropagation();
         shell.openExternal(this.href)
+    })
+    $(document).on('click', '*[data-href^="http"]', function(event) {
+        event.stopPropagation();
+        shell.openExternal(this.getAttribute('data-href'))
     })
     $(window).on('click', function(event) {
         event.preventDefault()

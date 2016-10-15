@@ -40,16 +40,23 @@ p {
     border-bottom: 1px solid #ccc;
     padding: 6px;
 }
+
+.tweet:hover {
+    background-color: #f5f8fa;
+}
+
 .tweet .profile {
     position: absolute;
     left: 0px;
     width: 60px;
     padding: 6px;
 }
+
 .tweet .body {
     margin-left: 60px;
     padding: 6px;
 }
+
 .tweet .header {
     padding-bottom: 6px;
 }
@@ -63,6 +70,10 @@ p {
 }
 .tweet .username, .tweet .timestamp, .user-item .username {
     color: gray;
+}
+
+.tweet p.tweet-text {
+    word-wrap: break-word;
 }
 
 .tweet .media-set {
@@ -92,6 +103,18 @@ p {
     max-width: 25%;
 }
 
+.tweet .quoted-tweet {
+    cursor: pointer;
+    margin: 6px 0;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.tweet .quoted-tweet:hover {
+    border: 1px solid #1DA1F2;
+}
+
 .tweet .footer {
     padding-top: 6px;
 }
@@ -101,7 +124,7 @@ p {
     text-decoration: none;
 }
 
-.tweet .footer .action-icon {
+.action-icon {
     width: 24px;
     height: 24px;
     fill: #AAB8C2;
