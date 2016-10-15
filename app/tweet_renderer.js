@@ -2,6 +2,7 @@
 
 const log = require('winston')
 const fs = require('fs')
+const twemoji = require('twemoji')
 
 
 var replySvg = fs.readFileSync(`${__dirname}/../images/reply.svg`, 'utf8');
@@ -261,6 +262,7 @@ function createTextDiv($, tag, tweet) {
         }
     }
     _add_chunk($, tag, text.slice(offset).join(''))
+    twemoji.parse(tag[0])
 }
 
 function _add_chunk($, tag, text) {

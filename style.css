@@ -76,6 +76,15 @@ p {
     word-wrap: break-word;
 }
 
+.tweet p.tweet-text * {
+    vertical-align: middle;
+}
+
+.tweet .emoji {
+    width: 20px;
+    height: 20px;
+}
+
 .tweet .media-set {
     margin: 12px 0;
     max-width: 500px;
