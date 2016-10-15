@@ -261,10 +261,13 @@ function createTextDiv($, tag, tweet) {
 
 function _add_chunk($, tag, text) {
     var i = 0
-    for (const line of text.split('\n')) {
+    for (let line of text.split('\n')) {
         if (i > 0) {
             tag.append($("<br/>"))
         }
+        line = line.replace(/&gt;/g, '>')
+        line = line.replace(/&lt;/g, '<')
+        line = line.replace(/&amp;/g, '&')
         // Using tag[0].ownerDocument instead of just 'document' because the latter is not accessible in tests
         tag.append(tag[0].ownerDocument.createTextNode(line.replace(/\n*$/, "")))
         i++
