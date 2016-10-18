@@ -76,7 +76,7 @@ p {
     word-wrap: break-word;
 }
 
-.tweet p.tweet-text * {
+.tweet p.tweet-text .emoji {
     vertical-align: middle;
 }
 

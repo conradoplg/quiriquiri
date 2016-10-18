@@ -174,7 +174,7 @@ quiri.on('user-added', (user) => {
 })
 
 ipcMain.on('post-tweet', (event, text, author, replyTo) => {
-    quiri.users[user.data.screen_name].postTweet(text, replyTo)
+    quiri.users[author].postTweet(text, replyTo)
 })
 
 ipcMain.on('retweet', (event, user, id) => {
