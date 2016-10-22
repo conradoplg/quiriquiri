@@ -4,12 +4,12 @@ const log = require('winston')
 const fs = require('fs')
 const twemoji = require('twemoji')
 
+const REPLY_SVG = fs.readFileSync(`${__dirname}/../images/reply.svg`, 'utf8')
+const RETWEET_SVG = fs.readFileSync(`${__dirname}/../images/retweet.svg`, 'utf8')
+const LIKE_SVG = fs.readFileSync(`${__dirname}/../images/like.svg`, 'utf8')
 
-var replySvg = fs.readFileSync(`${__dirname}/../images/reply.svg`, 'utf8');
-var retweetSvg = fs.readFileSync(`${__dirname}/../images/retweet.svg`, 'utf8');
-var likeSvg = fs.readFileSync(`${__dirname}/../images/like.svg`, 'utf8');
 
-
+// Get which users should be mentioned when replying a tweet.
 function getMentions(user, tweet) {
     var m = []
     var shownStatus = tweet
@@ -29,6 +29,7 @@ function getMentions(user, tweet) {
     return m.filter((screen_name) => screen_name != user.screen_name)
 }
 
+// Convert a Twitter date into a string timestamp.
 function getTimestamp(created_at) {
     var timestamp = new Date(created_at)
     var now = new Date()
@@ -48,26 +49,9 @@ function getTimestamp(created_at) {
     return timestampStr
 }
 
-function createTweetDiv($, tweet) {
-    var t = tweet;
-    var shownStatus = tweet;
-    var retweeterUser;
-    var mentions = []
-
-    if (t.retweeted_status) {
-        shownStatus = t.retweeted_status
-        retweeterUser = tweet.user
-    }
-    var quotedStatus = shownStatus.quoted_status
-    var text = shownStatus.text
-    var user = shownStatus.user || shownStatus.sender
-    var timestampStr = getTimestamp(tweet.created_at)
-
-    var tweetDiv = $("<div></div>", {
-        id: 'tweet_' + tweet.id_str,
-        class: "tweet"
-    })
-    tweetDiv.append($("<div></div>", {
+// Create a profile div for the specified user.
+function createProfileDiv($, user) {
+    return $("<div></div>", {
         class: "profile"
     }).append(
         $('<p></p>').append(
@@ -76,19 +60,18 @@ function createTweetDiv($, tweet) {
                 src: user.profile_image_url_https
             })
         )
-    ))
-    var bodyDiv = $("<div></div>", {
-        class: 'body'
-    })
-    tweetDiv.append(bodyDiv)
+    )
+}
+
+function createHeaderDiv($, user, retweeterUser, tweet, withTimestamp=true) {
+    var timestampStr = getTimestamp(tweet.created_at)
     var headerDiv = $("<p></p>", {
         class: "header"
     })
-    bodyDiv.append(headerDiv)
     headerDiv.append(
         $("<span></span>", {
             class: 'name'
-        }).text(user["name"]),
+        }).text(user.name),
         ' ',
         $("<a></a>", {
             class: 'username',
@@ -102,7 +85,7 @@ function createTweetDiv($, tweet) {
             }).text(' retweeted by '),
             $("<span></span>", {
                 class: 'name'
-            }).text(retweeterUser["name"]),
+            }).text(retweeterUser.name),
             ' ',
             $("<a></a>", {
                 class: 'username',
@@ -110,36 +93,28 @@ function createTweetDiv($, tweet) {
             }).text("@" + retweeterUser.screen_name)
         )
     }
-    headerDiv.append(' ', $("<a></a>", {
-        class: 'timestamp',
-        href: "https://twitter.com/" + user.screen_name + '/status/' + tweet.id_str,
-        target: '_blank'
-    }).text(timestampStr))
-    var tweetP = $("<p></p>", {class: 'tweet-text'})
-    createTextDiv($, tweetP, shownStatus)
-    bodyDiv.append(tweetP);
-    if (quotedStatus !== undefined) {
-        var quotedStatusUser = quotedStatus.user;
-        var quotedDiv = $("<blockquote></blockquote>", {
-            class: 'quoted-tweet',
-            'data-href': "https://twitter.com/" + quotedStatusUser.screen_name + '/status/' + quotedStatus.id_str,
-        })
-        bodyDiv.append(quotedDiv)
-        quotedDiv.append($("<p></p>", {
-            class: "user"
-        }).append(
-            $("<span></span>", {
-                class: 'name'
-            }).text(quotedStatusUser["name"]),
-            $("<span></span>", {
-                class: 'username'
-            }).text(" @" + quotedStatusUser["screen_name"])
-        ))
-        tweetP = $("<p></p>", {class: 'tweet-text'})
-        createTextDiv($, tweetP, quotedStatus)
-        quotedDiv.append(tweetP);
+    if (withTimestamp) {
+        headerDiv.append(' ', $("<a></a>", {
+            class: 'timestamp',
+            href: "https://twitter.com/" + user.screen_name + '/status/' + tweet.id_str,
+            target: '_blank'
+        }).text(timestampStr))
     }
-    var footerDiv = $('<div></div>', {
+    return headerDiv
+}
+
+function createQuotedDiv($, quotedStatus) {
+    return $("<blockquote></blockquote>", {
+        class: 'quoted-tweet',
+        'data-href': "https://twitter.com/" + quotedStatus.user.screen_name + '/status/' + quotedStatus.id_str,
+    }).append(
+        createHeaderDiv($, quotedStatusUser, null, quotedStatus, false),
+        createTextP($, tweetP, quotedStatus)
+    )
+}
+
+function createFooterDiv($, tweet) {
+    return $('<div></div>', {
         class: 'footer'
     }).append(
         $('<a></a>', {
@@ -147,14 +122,14 @@ function createTweetDiv($, tweet) {
             href: '#reply-' + tweet.id_str,
             class: 'action reply-action'
         }).append(
-            $(replySvg, {}).toggleClass('action-icon')
+            $(REPLY_SVG, {}).toggleClass('action-icon')
         ),
         $('<a></a>', {
             id: 'retweet-action-' + tweet.id_str,
             href: '#retweet-' + tweet.id_str,
             class: 'action retweet-action' + (tweet.retweeted ? ' retweeted' : '')
         }).append(
-            $(retweetSvg, {}).toggleClass('action-icon'),
+            $(RETWEET_SVG, {}).toggleClass('action-icon'),
             $('<span></span>', {
                 id: 'retweet-count-' + tweet.id_str,
                 class: 'count'
@@ -167,7 +142,7 @@ function createTweetDiv($, tweet) {
             href: '#like-' + tweet.id_str,
             class: 'action like-action' + (tweet.favorited ? ' liked' : '')
         }).append(
-            $(likeSvg, {}).toggleClass('action-icon'),
+            $(LIKE_SVG, {}).toggleClass('action-icon'),
             $('<span></span>', {
                 id: 'like-count-' + tweet.id_str,
                 class: 'count'
@@ -176,8 +151,33 @@ function createTweetDiv($, tweet) {
             )
         )
     )
-    bodyDiv.append(footerDiv)
-    return tweetDiv;
+}
+
+// Create a div with the specifid tweet rendered on it.
+function createTweetDiv($, tweet) {
+    var shownStatus = tweet
+    var retweeterUser
+    if (tweet.retweeted_status) {
+        shownStatus = tweet.retweeted_status
+        retweeterUser = tweet.user
+    }
+    var quotedStatus = shownStatus.quoted_status
+    var user = shownStatus.user || shownStatus.sender
+
+    return $("<div></div>", {
+        id: 'tweet_' + tweet.id_str,
+        class: "tweet"
+    }).append(
+        createProfileDiv($, user),
+        $("<div></div>", {
+            class: 'body'
+        }).append(
+            createHeaderDiv($, user, retweeterUser, tweet),
+            createTextP($, shownStatus),
+            (quotedStatus ? createQuotedDiv($, quotedStatus) : ''),
+            createFooterDiv($, tweet)
+        )
+    )
 }
 
 function createEventDiv($, event) {
@@ -203,8 +203,8 @@ function createEventDiv($, event) {
         profileDiv.append(
             $('<p></p>').append(
                 (event.event == 'favorite' ?
-                    $(likeSvg, {}).toggleClass('action-icon like-action') :
-                    $(retweetSvg, {}).toggleClass('action-icon retweet-action')
+                    $(LIKE_SVG, {}).toggleClass('action-icon like-action') :
+                    $(RETWEET_SVG, {}).toggleClass('action-icon retweet-action')
                 )
             )
         )
@@ -213,9 +213,7 @@ function createEventDiv($, event) {
         class: 'body'
     })
     tweetDiv.append(bodyDiv)
-    var headerDiv = $("<p></p>", {
-        class: "header"
-    })
+    var headerDiv = createHeaderDiv()
     bodyDiv.append(headerDiv)
     headerDiv.append(
         $("<span></span>", {
@@ -235,13 +233,13 @@ function createEventDiv($, event) {
     headerDiv.append(' ', $("<a></a>", {
         class: 'timestamp'
     }).text(timestampStr))
-    var tweetP = $("<p></p>", {class: 'tweet-text'})
-    createTextDiv($, tweetP, event.target_object, true)
+    var tweetP = createTextP($, event.target_object, true)
     bodyDiv.append(tweetP);
     return tweetDiv;
 }
 
-function createTextDiv($, tag, tweet, isEvent = false) {
+function createTextP($, tweet, isEvent = false) {
+    var tag = $("<p></p>", {class: 'tweet-text'})
     var t = tweet
     var ents = []
     var ent_indinces = {}
@@ -329,6 +327,7 @@ function createTextDiv($, tag, tweet, isEvent = false) {
     }
     _add_chunk($, tag, text.slice(offset).join(''))
     twemoji.parse(tag[0])
+    return tag
 }
 
 function _add_chunk($, tag, text) {
@@ -347,7 +346,7 @@ function _add_chunk($, tag, text) {
 }
 
 
-module.exports.createTextDiv = createTextDiv
+module.exports.createTextP = createTextP
 module.exports.createTweetDiv = createTweetDiv
 module.exports.createEventDiv = createEventDiv
 module.exports.getMentions = getMentions
