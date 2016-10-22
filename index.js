@@ -170,6 +170,9 @@ quiri.on('user-added', (user) => {
     user.on('retweet-error', (err, tweetId) => {
         win.webContents.send('retweet-error', err, tweetId)
     })
+    user.on('user-event', (user, event) => {
+        win.webContents.send('user-event', user, event)
+    })
     user.start()
 })
 

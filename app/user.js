@@ -46,6 +46,7 @@ class User extends EventEmitter {
                 this.screen_name = result.data.screen_name
                 this.profile_image_url = result.data.profile_image_url_https
                 this.data = result.data
+                this.id_str = result.id_str
                 callback(null, this)
             })
     }
@@ -71,6 +72,22 @@ class User extends EventEmitter {
         setTimeout(() => this._loadNewTweets(), 0)
         this._timeout = setInterval(() => this._loadNewTweets(), 90 * 1000)
         setTimeout(() => this.loadFriends(), 0)
+
+        this._stream = this.twit.stream('user', {follow: this.id_str})
+        this._stream.on('error', (err) => {
+            log.debug('twit.stream on error', JSON.stringify([this.screen_name, err]))
+        })
+        this._stream.on('message', (tweet) => {
+            //log.debug('message from stream: ', JSON.stringify([this.screen_name, tweet]))
+        })
+        this._stream.on('tweet', (tweet) => {
+            //log.debug('tweet from stream: ', JSON.stringify([this.screen_name, tweet.text]))
+            this.emit('tweets-loaded', this, 'home', [tweet])
+        })
+        this._stream.on('user_event', (eventMsg) => {
+            log.debug('user_event: ', JSON.stringify([this.screen_name, eventMsg]))
+            this.emit('user-event', this, eventMsg)
+        })
     }
 
     stop() {
@@ -184,7 +201,7 @@ class User extends EventEmitter {
             })
             .then((result) => {
                 var tweets = result.data
-                if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
+                if (!result.resp || result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
                     this.emit('load-error', result.data)
                     return
                 }
@@ -228,7 +245,7 @@ class User extends EventEmitter {
             })
             .then((result) => {
                 var friends = result.data.users
-                if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
+                if (!result.resp || result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
                     this.emit('load-friend-error', result.data)
                     return
                 }

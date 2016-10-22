@@ -16,6 +16,7 @@ var tr = nodeRequire('./app/tweet_renderer')
 
 
 var usernameMap = {}
+var arrivedTweetsMap = {}
 
 function getTimelineId(user, tl) {
     return 'timeline_' + user.data.screen_name + '_' + tl
@@ -44,8 +45,15 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
     for (let i = tweets.length - 1; i >= 0; i--) {
         try {
             let tweet = tweets[i]
+            if (tl == 'home' && arrivedTweetsMap[user.data.screen_name].has(tweet.id_str)) {
+                log.debug('Tweet already shown')
+                continue
+            }
             let tweetDiv = tr.createTweetDiv($, tweet)
             timelineDiv.append(tweetDiv)
+            if (tl == 'home') {
+                arrivedTweetsMap[user.data.screen_name].add(tweet.id_str)
+            }
             tweetDiv.contextmenu(function(event) {
                 event.preventDefault()
                 const menu = new Menu()
@@ -84,7 +92,7 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
                 event.preventDefault()
                 ipcRenderer.send('like', user, tweet.id_str)
             })
-            usernameMap[tweet.user.screen_name] = {
+            usernameMap[(tweet.user || tweet.sender).screen_name] = {
                 value: tweet.user.screen_name, label: tweet.user.name, img: tweet.user.profile_image_url_https
             }
         } catch (err) {
@@ -148,6 +156,7 @@ ipcRenderer.on('user-added', (event, user) => {
             $('<li></li>').append(links.dms)
         )
     )
+    arrivedTweetsMap[username] = new Set()
 })
 
 function defaultErrorHandler(event, err) {
@@ -174,6 +183,17 @@ ipcRenderer.on('retweeted', (event, user, tweetId) => {
 
 ipcRenderer.on('retweet-error', defaultErrorHandler)
 
+ipcRenderer.on('user-event', (event, user, eventMsg) => {
+    let username = user.data.screen_name
+    if (eventMsg.target.screen_name != username) {
+        return
+    }
+    let timelineDiv = $('#' + getTimelineId(user, 'mentions'))
+    let eventDiv = tr.createEventDiv($, eventMsg)
+    if (eventDiv) {
+        timelineDiv.append(eventDiv)
+    }
+})
 
 ipcRenderer.on('friends-loaded', (event, user, friends) => {
     for (let f of friends) {

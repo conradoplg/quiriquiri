@@ -29,20 +29,8 @@ function getMentions(user, tweet) {
     return m.filter((screen_name) => screen_name != user.screen_name)
 }
 
-function createTweetDiv($, tweet) {
-    var t = tweet;
-    var shownStatus = tweet;
-    var retweeterUser;
-    var mentions = []
-
-    if (t.retweeted_status) {
-        shownStatus = t.retweeted_status
-        retweeterUser = tweet.user
-    }
-    var quotedStatus = shownStatus.quoted_status
-    var text = shownStatus.text
-    var user = shownStatus.user || shownStatus.sender
-    var timestamp = new Date(tweet.created_at)
+function getTimestamp(created_at) {
+    var timestamp = new Date(created_at)
     var now = new Date()
     var options = {
         hour: "2-digit",
@@ -57,6 +45,23 @@ function createTweetDiv($, tweet) {
         options.year = '2-digit'
     }
     var timestampStr = timestamp.toLocaleString(undefined, options)
+    return timestampStr
+}
+
+function createTweetDiv($, tweet) {
+    var t = tweet;
+    var shownStatus = tweet;
+    var retweeterUser;
+    var mentions = []
+
+    if (t.retweeted_status) {
+        shownStatus = t.retweeted_status
+        retweeterUser = tweet.user
+    }
+    var quotedStatus = shownStatus.quoted_status
+    var text = shownStatus.text
+    var user = shownStatus.user || shownStatus.sender
+    var timestampStr = getTimestamp(tweet.created_at)
 
     var tweetDiv = $("<div></div>", {
         id: 'tweet_' + tweet.id_str,
@@ -175,7 +180,68 @@ function createTweetDiv($, tweet) {
     return tweetDiv;
 }
 
-function createTextDiv($, tag, tweet) {
+function createEventDiv($, event) {
+    var timestampStr = getTimestamp(event.created_at)
+    var user = event.source
+    var eventDescription = {
+        favorite: 'favorited your tweet',
+        follow: 'is following you',
+        quoted_tweet: 'quoted your tweet'
+    }
+    if (!eventDescription[event.event]) {
+        return null
+    }
+
+    var tweetDiv = $("<div></div>", {
+        class: "tweet event"
+    })
+    var profileDiv = $("<div></div>", {
+        class: "profile"
+    })
+    tweetDiv.append(profileDiv)
+    if (['favorite', 'quoted_tweet'].indexOf(event.event) != -1) {
+        profileDiv.append(
+            $('<p></p>').append(
+                (event.event == 'favorite' ?
+                    $(likeSvg, {}).toggleClass('action-icon like-action') :
+                    $(retweetSvg, {}).toggleClass('action-icon retweet-action')
+                )
+            )
+        )
+    }
+    var bodyDiv = $("<div></div>", {
+        class: 'body'
+    })
+    tweetDiv.append(bodyDiv)
+    var headerDiv = $("<p></p>", {
+        class: "header"
+    })
+    bodyDiv.append(headerDiv)
+    headerDiv.append(
+        $("<span></span>", {
+            class: 'name'
+        }).text(user["name"]),
+        ' ',
+        $("<a></a>", {
+            class: 'username',
+            href: 'https://twitter.com/' + user.screen_name
+        }).text("@" + user.screen_name)
+    )
+    headerDiv.append(
+        $("<span></span>", {
+            class: 'event-description'
+        }).text(' ' + eventDescription[event.event])
+    )
+    headerDiv.append(' ', $("<a></a>", {
+        class: 'timestamp'
+    }).text(timestampStr))
+    var tweetP = $("<p></p>", {class: 'tweet-text'})
+    createTextDiv($, tweetP, event.target_object, true)
+    bodyDiv.append(tweetP);
+    return tweetDiv;
+}
+
+function createTextDiv($, tag, tweet, isEvent = false) {
     var t = tweet
     var ents = []
     var ent_indinces = {}
@@ -222,7 +288,7 @@ function createTextDiv($, tag, tweet) {
                 _add_chunk($, tag, '#')
                 break
         }
-        if (typ == 'media') {
+        if (typ == 'media' && !isEvent) {
             if (!mediaDiv) {
                 mediaDiv = $("<div></div>", {
                     class: 'media-set'
@@ -283,4 +349,5 @@ function _add_chunk($, tag, text) {
 
 module.exports.createTextDiv = createTextDiv
 module.exports.createTweetDiv = createTweetDiv
+module.exports.createEventDiv = createEventDiv
 module.exports.getMentions = getMentions
