@@ -4,7 +4,7 @@
   "description": "QuiriQuiri: a Twitter client",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec",
+    "test": "./node_modules/.bin/mocha --reporter spec -r test/setup.js",
     "start": "electron .",
     "format": "find . -path ./node_modules -prune -o -name '*.js' -print | xargs js-beautify -r -n",
     "pack": "build --dir",

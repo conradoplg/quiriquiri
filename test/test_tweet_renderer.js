@@ -47,12 +47,12 @@ require("jsdom").env("", function(err, window) {
 
             //TODO: day rendering depends on the current date; mock it somehow
             div = $("<div></div>")
-            tweet = JSON.parse(fs.readFileSync('test/tweet_sample_01.json', 'utf8'));
+            tweet = JSON.parse(fs.readFileSync('test/tweet_sample_01.json', 'utf8'))
             div = tr.createTweetDiv($, tweet)
             assert.strictEqual(div.html(), tweet.full_html)
 
             div = $("<div></div>")
-            tweet = JSON.parse(fs.readFileSync('test/tweet_sample_dm.json', 'utf8'));
+            tweet = JSON.parse(fs.readFileSync('test/tweet_sample_dm.json', 'utf8'))
             div = tr.createTweetDiv($, tweet)
             assert.strictEqual(div.html(), tweet.full_html)
         })
