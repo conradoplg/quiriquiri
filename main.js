@@ -56,7 +56,7 @@ ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
             }
             tweetDiv.contextmenu(function(event) {
                 event.preventDefault()
-                const menu = new Menu()
+                let menu = event.originalEvent._menu = event.originalEvent._menu || new Menu()
                 menu.append(new MenuItem({
                     label: 'Mark this and previous and read',
                     click() {
@@ -215,8 +215,24 @@ $(document).ready(() => {
         shell.openExternal(this.href)
     })
     $(document).on('click', '*[data-href^="http"]', function(event) {
+        event.preventDefault();
         event.stopPropagation();
         shell.openExternal(this.getAttribute('data-href'))
+    })
+    $(document).on('contextmenu', 'a[href^="http"]', function(event) {
+        event.preventDefault();
+        let menu = event.originalEvent._menu = event.originalEvent._menu || new Menu()
+        menu.append(new MenuItem({
+            label: 'Copy link',
+            click: () => {
+                clipboard.writeText(this.href)
+            }
+        }))
+    })
+    $(document).on('contextmenu', function(event) {
+        event.preventDefault();
+        let menu = event.originalEvent._menu = event.originalEvent._menu || new Menu()
+        menu.popup(remote.getCurrentWindow())
     })
     $(window).on('click', function(event) {
         event.preventDefault()
