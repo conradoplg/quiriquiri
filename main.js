@@ -41,7 +41,7 @@ function showTweetDialog(initialText, author, replyTo) {
     $('#tweet-dialog-reply-to').val(replyTo)
 }
 
-function getOnTweetContextMenu(timelineDiv, tweet) {
+function getOnTweetContextMenu(timelineDiv, user, tl, tweet) {
     return function (event) {
         event.preventDefault()
         let menu = event.originalEvent._menu = event.originalEvent._menu || new Menu()
@@ -165,7 +165,7 @@ function onTweetArrived(event, user, tl, tweets) {
             if (tl == 'home') {
                 arrivedTweetsMap[user.data.screen_name].add(tweet.id_str)
             }
-            tweetDiv.contextmenu(getOnTweetContextMenu(timelineDiv, tweet))
+            tweetDiv.contextmenu(getOnTweetContextMenu(timelineDiv, user, tl, tweet))
             $('#reply-action-' + tweet.id_str).click(function(event) {
                 event.preventDefault()
                 var mentions = tweetRenderer.getMentions(user.data, tweet).map((username) => '@' + username).join(' ') + ' '
