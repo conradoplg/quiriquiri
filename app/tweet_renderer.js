@@ -78,7 +78,7 @@ function createHeaderDiv($, user, retweeterUser, tweet, withTimestamp=true) {
             href: 'https://twitter.com/' + user.screen_name
         }).text("@" + user.screen_name)
     );
-    if (retweeterUser !== undefined) {
+    if (retweeterUser) {
         headerDiv.append(
             $("<span></span>", {
                 class: 'retweeted-by'
@@ -108,8 +108,8 @@ function createQuotedDiv($, quotedStatus) {
         class: 'quoted-tweet',
         'data-href': "https://twitter.com/" + quotedStatus.user.screen_name + '/status/' + quotedStatus.id_str,
     }).append(
-        createHeaderDiv($, quotedStatusUser, null, quotedStatus, false),
-        createTextP($, tweetP, quotedStatus)
+        createHeaderDiv($, quotedStatus.user, null, quotedStatus, false),
+        createTextP($, quotedStatus)
     )
 }
 
@@ -265,7 +265,7 @@ function createTextP($, tweet, isEvent = false) {
         let ent = e[2]
         let chunk = text.slice(offset, ent.indices[0]).join('')
         if (chunk.length > 0 && offset < ent.indices[0]) {
-            _add_chunk($, tag, chunk)
+            addTextChunk($, tag, chunk)
         }
         chunk = text.slice(ent.indices[0], ent.indices[1]).join('')
         offset = ent.indices[1]
@@ -278,12 +278,12 @@ function createTextP($, tweet, isEvent = false) {
             case 'user_mentions':
                 url = 'https://twitter.com/' + ent.screen_name
                 chunk = chunk.substring(1)
-                _add_chunk($, tag, '@')
+                addTextChunk($, tag, '@')
                 break
             case 'hashtags':
                 url = 'https://twitter.com/search?q=' + ent.text
                 chunk = chunk.substring(1)
-                _add_chunk($, tag, '#')
+                addTextChunk($, tag, '#')
                 break
         }
         if (typ == 'media' && !isEvent) {
@@ -325,12 +325,12 @@ function createTextP($, tweet, isEvent = false) {
             }
         }
     }
-    _add_chunk($, tag, text.slice(offset).join(''))
+    addTextChunk($, tag, text.slice(offset).join(''))
     twemoji.parse(tag[0])
     return tag
 }
 
-function _add_chunk($, tag, text) {
+function addTextChunk($, tag, text) {
     var i = 0
     for (let line of text.split('\n')) {
         if (i > 0) {
