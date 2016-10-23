@@ -12,7 +12,8 @@ const log = nodeRequire('winston')
 log.level = 'debug'
 var shell = nodeRequire('electron').shell
 
-var tr = nodeRequire('./app/tweet_renderer')
+var tweetRenderer = nodeRequire('./app/tweet_renderer')
+var userRenderer = nodeRequire('./app/user_renderer')
 
 
 var usernameMap = {}
@@ -40,124 +41,43 @@ function showTweetDialog(initialText, author, replyTo) {
     $('#tweet-dialog-reply-to').val(replyTo)
 }
 
-ipcRenderer.on('tweet-arrived', (event, user, tl, tweets) => {
-    let timelineDiv = $('#' + getTimelineId(user, tl))
-    for (let i = tweets.length - 1; i >= 0; i--) {
-        try {
-            let tweet = tweets[i]
-            if (tl == 'home' && arrivedTweetsMap[user.data.screen_name].has(tweet.id_str)) {
-                log.debug('Tweet already shown')
-                continue
-            }
-            let tweetDiv = tr.createTweetDiv($, tweet)
-            timelineDiv.append(tweetDiv)
-            if (tl == 'home') {
-                arrivedTweetsMap[user.data.screen_name].add(tweet.id_str)
-            }
-            tweetDiv.contextmenu(function(event) {
-                event.preventDefault()
-                let menu = event.originalEvent._menu = event.originalEvent._menu || new Menu()
-                menu.append(new MenuItem({
-                    label: 'Mark this and previous and read',
-                    click() {
-                        ipcRenderer.send('mark-as-read', user, tl, tweet.id_str)
-                        timelineDiv.children().each(function(i, elem) {
-                            elem.remove()
-                            if (elem.id == 'tweet_' + tweet.id_str) {
-                                return false
-                            }
-                        })
-                        $('body').scrollTop(0)
-                        updateUnreadCount(user, tl)
-                    }
-                }))
-                menu.append(new MenuItem({
-                    label: 'Copy JSON',
-                    click() {
-                        clipboard.writeText(JSON.stringify(tweet, null, 4))
-                    }
-                }))
-                menu.popup(remote.getCurrentWindow())
-            })
-            $('#reply-action-' + tweet.id_str).click(function(event) {
-                event.preventDefault()
-                var mentions = tr.getMentions(user.data, tweet).map((username) => '@' + username).join(' ') + ' '
-                showTweetDialog(mentions, user.data.screen_name, tweet.id_str)
-            })
-            $('#retweet-action-' + tweet.id_str).click(function(event) {
-                event.preventDefault()
-                ipcRenderer.send('retweet', user, tweet.id_str)
-            })
-            $('#like-action-' + tweet.id_str).click(function(event) {
-                event.preventDefault()
-                ipcRenderer.send('like', user, tweet.id_str)
-            })
-            usernameMap[(tweet.user || tweet.sender).screen_name] = {
-                value: tweet.user.screen_name, label: tweet.user.name, img: tweet.user.profile_image_url_https
-            }
-        } catch (err) {
-            console.error(err.stack)
-        }
-    }
-    updateUnreadCount(user, tl)
-})
-
-ipcRenderer.on('user-added', (event, user) => {
-    log.debug('ipcRenderer user-added called with', user)
-    let username = user.data.screen_name
-
-    let divs = {}
-    for (let tl of['home', 'mentions', 'dms']) {
-        let div = $('<div></div>', {
-            id: getTimelineId(user, tl),
-            class: 'timeline'
-        })
-        $('#timeline').append(div)
-        divs[tl] = div
-    }
-    $('#timeline').children().hide()
-    divs.home.show()
-
-    let links = {}
-    let linkNames = {
-        home: 'Home',
-        mentions: 'Mentions',
-        dms: 'Direct Messages'
-    }
-    for (let tl of ['home', 'mentions', 'dms']) {
-        let link = $('<a></a>', {
-            href: '#' + username + '/' + tl
-        }).append(
-            linkNames[tl],
-            $('<span></span>', {
-                id: 'counter_' + username + '_' + tl
-            })
-        )
-        link.click(function(event) {
-            event.preventDefault()
-            $('#timeline').children().hide()
-            divs[tl].show()
-        })
-        links[tl] = link
-    }
-    let postLink = $('<a></a>', {
-        href: '#' + username + '/post'
-    }).text('Post')
-    postLink.click(function(event) {
+function getOnTweetContextMenu(timelineDiv, tweet) {
+    return function (event) {
         event.preventDefault()
-        showTweetDialog('', username, '')
-    })
-    $('#user_list').append(
-        $('<li></li>').text(username),
-        $('<ul></ul>').append(
-            $('<li></li>').append(postLink),
-            $('<li></li>').append(links.home),
-            $('<li></li>').append(links.mentions),
-            $('<li></li>').append(links.dms)
-        )
-    )
-    arrivedTweetsMap[username] = new Set()
-})
+        let menu = event.originalEvent._menu = event.originalEvent._menu || new Menu()
+        menu.append(new MenuItem({
+            label: 'Mark this and previous and read',
+            click() {
+                ipcRenderer.send('mark-as-read', user, tl, tweet.id_str)
+                timelineDiv.children().each(function (i, elem) {
+                    elem.remove()
+                    if (elem.id == 'tweet_' + tweet.id_str) {
+                        return false
+                    }
+                })
+                $('body').scrollTop(0)
+                updateUnreadCount(user, tl)
+            }
+        }))
+        menu.append(new MenuItem({
+            label: 'Copy JSON',
+            click() {
+                clipboard.writeText(JSON.stringify(tweet, null, 4))
+            }
+        }))
+    }
+}
+
+function onLinkContextMenu(event) {
+    event.preventDefault();
+    let menu = event.originalEvent._menu = event.originalEvent._menu || new Menu()
+    menu.append(new MenuItem({
+        label: 'Copy link',
+        click: () => {
+            clipboard.writeText(this.href)
+        }
+    }))
+}
 
 function defaultErrorHandler(event, err) {
     $('#modal').hide()
@@ -165,81 +85,7 @@ function defaultErrorHandler(event, err) {
     $("#error").show().delay(5000).fadeOut()
 }
 
-ipcRenderer.on('tweet-posted', (event, user, tweet) => {
-    $('#modal').hide()
-})
-
-ipcRenderer.on('post-tweet-error', defaultErrorHandler)
-
-ipcRenderer.on('liked', (event, user, tweetId) => {
-    $('#like-action-' + tweetId).toggleClass('liked')
-})
-
-ipcRenderer.on('like-error', defaultErrorHandler)
-
-ipcRenderer.on('retweeted', (event, user, tweetId) => {
-    $('#retweet-action-' + tweetId).toggleClass('retweeted')
-})
-
-ipcRenderer.on('retweet-error', defaultErrorHandler)
-
-ipcRenderer.on('user-event', (event, user, eventMsg) => {
-    let username = user.data.screen_name
-    if (eventMsg.target.screen_name != username) {
-        return
-    }
-    let timelineDiv = $('#' + getTimelineId(user, 'mentions'))
-    let eventDiv = tr.createEventDiv($, eventMsg)
-    if (eventDiv) {
-        timelineDiv.append(eventDiv)
-    }
-})
-
-ipcRenderer.on('friends-loaded', (event, user, friends) => {
-    for (let f of friends) {
-        usernameMap[f.screen_name] = {
-            value: f.screen_name, label: f.name, img: f.profile_image_url_https
-        }
-    }
-})
-
-$(document).ready(() => {
-    $('#add_user').click(function(event) {
-        event.preventDefault()
-        ipcRenderer.send('add-user')
-    })
-    //open links externally by default
-    $(document).on('click', 'a[href^="http"]', function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        shell.openExternal(this.href)
-    })
-    $(document).on('click', '*[data-href^="http"]', function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        shell.openExternal(this.getAttribute('data-href'))
-    })
-    $(document).on('contextmenu', 'a[href^="http"]', function(event) {
-        event.preventDefault();
-        let menu = event.originalEvent._menu = event.originalEvent._menu || new Menu()
-        menu.append(new MenuItem({
-            label: 'Copy link',
-            click: () => {
-                clipboard.writeText(this.href)
-            }
-        }))
-    })
-    $(document).on('contextmenu', function(event) {
-        event.preventDefault();
-        let menu = event.originalEvent._menu = event.originalEvent._menu || new Menu()
-        menu.popup(remote.getCurrentWindow())
-    })
-    $(window).on('click', function(event) {
-        event.preventDefault()
-        if (event.target == document.getElementById('modal')) {
-            $('#modal').hide()
-        }
-    })
+function setupPostDialog() {
     $('#tweet-dialog-post').on('click', function(event) {
         event.preventDefault()
         $('#tweet-dialog-post').prop('disabled', true)
@@ -249,12 +95,12 @@ $(document).ready(() => {
         }, 2000)
     })
     $("#tweet-dialog-text")
-    .on( "keydown", function( event ) {
-        // don't navigate away from the field on tab when selecting an item
-        if (event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
-            event.preventDefault();
-        }
-    }).autocomplete({
+        .on( "keydown", function( event ) {
+            // don't navigate away from the field on tab when selecting an item
+            if (event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+                event.preventDefault();
+            }
+        }).autocomplete({
         minLength: 0,
         autoFocus: true,
         delay: 0,
@@ -267,9 +113,9 @@ $(document).ready(() => {
                 var search = matches[0].substring(1)
                 for (let u in usernameMap) {
                     if (usernameMap[u].value.indexOf(search) != -1
-                       || usernameMap[u].value.toLowerCase().indexOf(search) != -1
-                       || usernameMap[u].label.indexOf(search) != -1
-                       || usernameMap[u].label.toLowerCase().indexOf(search) != -1) {
+                        || usernameMap[u].value.toLowerCase().indexOf(search) != -1
+                        || usernameMap[u].label.indexOf(search) != -1
+                        || usernameMap[u].label.toLowerCase().indexOf(search) != -1) {
                         arr.push(usernameMap[u])
                     }
                 }
@@ -303,5 +149,126 @@ $(document).ready(() => {
             }).text("@" + item.value)
         ).appendTo(ul)
     }
+}
+
+function onTweetArrived(event, user, tl, tweets) {
+    let timelineDiv = $('#' + getTimelineId(user, tl))
+    for (let i = tweets.length - 1; i >= 0; i--) {
+        try {
+            let tweet = tweets[i]
+            if (tl == 'home' && arrivedTweetsMap[user.data.screen_name].has(tweet.id_str)) {
+                log.debug('Tweet already shown')
+                continue
+            }
+            let tweetDiv = tweetRenderer.createTweetDiv($, tweet)
+            timelineDiv.append(tweetDiv)
+            if (tl == 'home') {
+                arrivedTweetsMap[user.data.screen_name].add(tweet.id_str)
+            }
+            tweetDiv.contextmenu(getOnTweetContextMenu(timelineDiv, tweet))
+            $('#reply-action-' + tweet.id_str).click(function(event) {
+                event.preventDefault()
+                var mentions = tweetRenderer.getMentions(user.data, tweet).map((username) => '@' + username).join(' ') + ' '
+                showTweetDialog(mentions, user.data.screen_name, tweet.id_str)
+            })
+            $('#retweet-action-' + tweet.id_str).click(function(event) {
+                event.preventDefault()
+                ipcRenderer.send('retweet', user, tweet.id_str)
+            })
+            $('#like-action-' + tweet.id_str).click(function(event) {
+                event.preventDefault()
+                ipcRenderer.send('like', user, tweet.id_str)
+            })
+            usernameMap[(tweet.user || tweet.sender).screen_name] = {
+                value: tweet.user.screen_name, label: tweet.user.name, img: tweet.user.profile_image_url_https
+            }
+        } catch (err) {
+            console.error(err.stack)
+        }
+    }
+    updateUnreadCount(user, tl)
+}
+
+function onUserAdded(event, user) {
+    log.debug('ipcRenderer user-added called with', user)
+    userRenderer.addUserDoms(user, $('#timeline'), $('#user_list'))
+    arrivedTweetsMap[user.data.screen_name] = new Set()
+}
+
+function onUserEvent(event, user, eventMsg) {
+    let username = user.data.screen_name
+    if (eventMsg.target.screen_name != username) {
+        return
+    }
+    let timelineDiv = $('#' + getTimelineId(user, 'mentions'))
+    let eventDiv = tweetRenderer.createEventDiv($, eventMsg)
+    if (eventDiv) {
+        timelineDiv.append(eventDiv)
+    }
+}
+
+function onDocumentReady() {
+    $('#add_user').click(function(event) {
+        event.preventDefault()
+        ipcRenderer.send('add-user')
+    })
+    //open links externally by default
+    $(document).on('click', 'a[href^="http"]', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        shell.openExternal(this.href)
+    })
+    $(document).on('click', '*[data-href^="http"]', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        shell.openExternal(this.getAttribute('data-href'))
+    })
+    $(document).on('contextmenu', 'a[href^="http"]', onLinkContextMenu)
+    $(document).on('contextmenu', function(event) {
+        event.preventDefault();
+        let menu = event.originalEvent._menu = event.originalEvent._menu || new Menu()
+        menu.popup(remote.getCurrentWindow())
+    })
+    $(window).on('click', function(event) {
+        event.preventDefault()
+        if (event.target == document.getElementById('modal')) {
+            $('#modal').hide()
+        }
+    })
+    setupPostDialog()
     ipcRenderer.send('main-ready')
+}
+
+ipcRenderer.on('tweet-arrived', onTweetArrived)
+
+ipcRenderer.on('user-added', onUserAdded)
+
+ipcRenderer.on('tweet-posted', (event, user, tweet) => {
+    $('#modal').hide()
 })
+
+ipcRenderer.on('post-tweet-error', defaultErrorHandler)
+
+ipcRenderer.on('liked', (event, user, tweetId) => {
+    $('#like-action-' + tweetId).toggleClass('liked')
+})
+
+ipcRenderer.on('like-error', defaultErrorHandler)
+
+ipcRenderer.on('retweeted', (event, user, tweetId) => {
+    $('#retweet-action-' + tweetId).toggleClass('retweeted')
+})
+
+ipcRenderer.on('retweet-error', defaultErrorHandler)
+
+ipcRenderer.on('user-event', onUserEvent)
+
+ipcRenderer.on('friends-loaded', (event, user, friends) => {
+    for (let f of friends) {
+        usernameMap[f.screen_name] = {
+            value: f.screen_name, label: f.name, img: f.profile_image_url_https
+        }
+    }
+})
+
+$(document).ready(onDocumentReady)

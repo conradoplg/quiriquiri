@@ -20,8 +20,6 @@ const {
 let win
 
 function createWindow() {
-
-    // Create the browser window.
     win = new BrowserWindow({
         width: 1600,
         height: 800,
@@ -29,12 +27,9 @@ function createWindow() {
         icon: `${__dirname}/resources/icons/64x64/quiriquiri.png`
     })
 
-    // and load the index.html of the app.
     win.loadURL(`file://${__dirname}/index.html`)
-
     win.webContents.openDevTools()
 
-    // Emitted when the window is closed.
     win.on('closed', () => {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
@@ -87,10 +82,6 @@ app.on('activate', () => {
     }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
-var secret = require('./secret')
 var twitterAuthorization = new TwitterAuthorization('quiriquiri://authorize/', secret['consumer_key'], secret['consumer_secret'])
 var addUserWin = null
 
