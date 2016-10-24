@@ -240,7 +240,7 @@ function createEventDiv($, event) {
 
 function createTextP($, tweet, isEvent = false) {
     var tag = $("<p></p>", {class: 'tweet-text'})
-    var t = tweet
+    var t = tweet.extended_tweet || tweet
     var ents = []
     var ent_indinces = {}
     var mediaCount = 0
@@ -257,7 +257,7 @@ function createTextP($, tweet, isEvent = false) {
     }
     ents.sort((a, b) => a[0] - b[0])
 
-    var text = Array.from(tweet.full_text || tweet.text)
+    var text = Array.from(t.full_text || t.text)
     var offset = 0
     var mediaDiv = null
     for (const e of ents) {
