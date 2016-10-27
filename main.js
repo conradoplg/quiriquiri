@@ -204,6 +204,7 @@ function onUserEvent(event, user, eventMsg) {
     let eventDiv = tweetRenderer.createEventDiv($, eventMsg)
     if (eventDiv) {
         timelineDiv.append(eventDiv)
+        updateUnreadCount(user, 'mentions')
     }
 }
 

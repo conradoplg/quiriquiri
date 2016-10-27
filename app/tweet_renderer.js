@@ -213,7 +213,9 @@ function createEventDiv($, event) {
         class: 'body'
     })
     tweetDiv.append(bodyDiv)
-    var headerDiv = createHeaderDiv()
+    var headerDiv = $("<p></p>", {
+        class: "header"
+    })
     bodyDiv.append(headerDiv)
     headerDiv.append(
         $("<span></span>", {
