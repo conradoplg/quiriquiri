@@ -291,7 +291,9 @@ function createTextP($, tweet, isEvent = false) {
         if (typ == 'media' && !isEvent) {
             if (!mediaDiv) {
                 mediaDiv = $("<div></div>", {
-                    class: 'media-set'
+                    class: 'media-set',
+                    'data-featherlight-gallery': '',
+                    'data-featherlight-filter': 'a',
                 })
                 tag.append(mediaDiv)
             }
@@ -309,13 +311,12 @@ function createTextP($, tweet, isEvent = false) {
                 }
             } else {
                 mediaDiv.append($("<a></a>", {
-                    href: ent.media_url_https + ':large'
-                }).append(
-                    $("<img/>", {
-                        class: 'media media-' + mediaCount,
-                        src: ent.media_url_https + ':small'
-                    })
-                ))
+                    href: ent.media_url_https + ':large',
+                    'data-featherlight': 'image',
+                }).append($("<img/>", {
+                    class: 'media media-' + mediaCount,
+                    src: ent.media_url_https + ':small'
+                })))
             }
         } else {
             //TODO: use metadata to decide this
@@ -325,6 +326,13 @@ function createTextP($, tweet, isEvent = false) {
                     href: url
                 }).text(chunk))
             }
+        }
+    }
+    if (mediaDiv) {
+        if (mediaDiv.children().length == 1) {
+            mediaDiv.first().featherlight({openSpeed: 0})
+        } else {
+            mediaDiv.featherlightGallery({openSpeed: 0, galleryFadeIn: 0, galleryFadeOut: 0})
         }
     }
     addTextChunk($, tag, text.slice(offset).join(''))

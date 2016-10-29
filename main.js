@@ -215,11 +215,17 @@ function onDocumentReady() {
     })
     //open links externally by default
     $(document).on('click', 'a[href^="http"]', function(event) {
+        if ($(event.target).parent().attr('data-featherlight')) {
+            return
+        }
         event.preventDefault();
         event.stopPropagation();
         shell.openExternal(this.href)
     })
     $(document).on('click', '*[data-href^="http"]', function(event) {
+        if ($(event.target).parent().attr('data-featherlight')) {
+            return
+        }
         event.preventDefault();
         event.stopPropagation();
         shell.openExternal(this.getAttribute('data-href'))
