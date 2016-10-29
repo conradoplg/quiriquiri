@@ -298,10 +298,16 @@ function createTextP($, tweet, isEvent = false) {
                 tag.append(mediaDiv)
             }
             if (ent.video_info) {
-                let video = $("<video></video>", {
+                let videoOptions = {
                     class: 'media media-' + mediaCount,
-                    controls: ''
-                })
+                }
+                if (ent.type == 'animated_gif') {
+                    videoOptions.autoplay = ''
+                    videoOptions.loop = ''
+                } else {
+                    videoOptions.controls = ''
+                }
+                let video = $("<video></video>", videoOptions)
                 mediaDiv.append(video)
                 for (const variant of ent.video_info.variants) {
                     video.append($('<source></source>', {

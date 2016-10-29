@@ -63,6 +63,8 @@ p {
 
 .tweet .profile-image {
     border-radius: 5px;
+    width: 48px;
+    height: 48px;
 }
 
 .tweet .name, .user-item .name {
