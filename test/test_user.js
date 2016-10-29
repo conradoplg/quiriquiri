@@ -1,7 +1,6 @@
 "use strict"
 
-const log = require('winston')
-log.level = 'debug'
+const log = require('./app/log')
 
 var assert = require('assert')
 var sinon = require('sinon')

@@ -1,6 +1,6 @@
 "use strict"
 
-const log = require('winston')
+const log = require('./log')
 const fs = require('fs')
 const twemoji = require('twemoji')
 
@@ -321,7 +321,7 @@ function createTextP($, tweet, isEvent = false) {
         } else {
             //TODO: use metadata to decide this
             //don't include link to quoted status
-            if (!tweet.quoted_status || url.indexOf(tweet.quoted_status_id_str) == -1) {
+            if (!tweet.quoted_status || !url || url.indexOf(tweet.quoted_status_id_str) == -1) {
                 tag.append($("<a></a>", {
                     href: url
                 }).text(chunk))

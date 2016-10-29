@@ -3,7 +3,7 @@
 var User = require('./user').User
 var credentials = require('../secret')
 const EventEmitter = require('events')
-const log = require('winston')
+const log = require('./log')
 
 
 class QuiriQuiriApp extends EventEmitter {

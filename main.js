@@ -8,8 +8,7 @@ const {
     Menu,
     MenuItem
 } = remote
-const log = nodeRequire('winston')
-log.level = 'debug'
+const log = nodeRequire('./app/log')
 var shell = nodeRequire('electron').shell
 
 var tweetRenderer = nodeRequire('./app/tweet_renderer')
@@ -279,3 +278,7 @@ ipcRenderer.on('friends-loaded', (event, user, friends) => {
 })
 
 $(document).ready(onDocumentReady)
+
+window.onerror = function(error, url, line) {
+    log.error(error, JSON.stringify([url, line]))
+}

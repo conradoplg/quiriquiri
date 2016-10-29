@@ -1,8 +1,7 @@
 var assert = require('assert')
 var tr = require('../app/tweet_renderer')
 var fs = require('fs')
-const log = require('winston')
-log.level = 'debug'
+const log = require('./app/log')
 
 require("jsdom").env("", function(err, window) {
     if (err) {

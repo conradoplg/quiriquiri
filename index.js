@@ -1,5 +1,4 @@
-const log = require('winston')
-log.level = 'debug'
+const log = require('./app/log')
 
 var secret = require('./secret')
 var QuiriQuiriApp = require('./app/app').QuiriQuiriApp
@@ -177,4 +176,8 @@ ipcMain.on('retweet', (event, user, id) => {
 
 ipcMain.on('like', (event, user, id) => {
     quiri.users[user.data.screen_name].like(id)
+})
+
+process.on('uncaughtException', function (error) {
+    log.error(error, error.stack)
 })
