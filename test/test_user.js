@@ -1,6 +1,6 @@
 "use strict"
 
-const log = require('./app/log')
+const log = require('../app/log')
 
 var assert = require('assert')
 var sinon = require('sinon')

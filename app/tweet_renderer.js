@@ -334,13 +334,6 @@ function createTextP($, tweet, isEvent = false) {
             }
         }
     }
-    if (mediaDiv) {
-        if (mediaDiv.children().length == 1) {
-            mediaDiv.first().featherlight({openSpeed: 0})
-        } else {
-            mediaDiv.featherlightGallery({openSpeed: 0, galleryFadeIn: 0, galleryFadeOut: 0})
-        }
-    }
     addTextChunk($, tag, text.slice(offset).join(''))
     twemoji.parse(tag[0])
     return tag

@@ -1,7 +1,7 @@
 var assert = require('assert')
 var tr = require('../app/tweet_renderer')
 var fs = require('fs')
-const log = require('./app/log')
+const log = require('../app/log')
 
 require("jsdom").env("", function(err, window) {
     if (err) {
@@ -9,6 +9,8 @@ require("jsdom").env("", function(err, window) {
         return
     }
     var $ = require("jquery")(window)
+    global.jQuery = $
+    require('featherlight')
 
     describe("Tweet Renderer", function() {
         it("renders the tweet text", function() {

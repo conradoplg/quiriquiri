@@ -8,9 +8,10 @@ const {
     Menu,
     MenuItem
 } = remote
-const log = nodeRequire('./app/log')
 var shell = nodeRequire('electron').shell
+var twitterText = nodeRequire('twitter-text')
 
+const log = nodeRequire('./app/log')
 var tweetRenderer = nodeRequire('./app/tweet_renderer')
 var userRenderer = nodeRequire('./app/user_renderer')
 
@@ -93,8 +94,14 @@ function setupPostDialog() {
             ipcRenderer.send('post-tweet', $('#tweet-dialog-text').val(), $('#tweet-dialog-author').val(), $('#tweet-dialog-reply-to').val())
         }, 2000)
     })
-    $("#tweet-dialog-text")
-        .on( "keydown", function( event ) {
+    let tweetDialogText = $('#tweet-dialog-text')
+    let updateTweetLength = function () {
+        let len = 140 - twitterText.getTweetLength(tweetDialogText.val())
+        $('#tweet-dialog-remaining-length').text("" + len)
+    }
+    tweetDialogText.keypress(updateTweetLength)
+    tweetDialogText.keyup(updateTweetLength)
+    tweetDialogText.on( "keydown", function( event ) {
             // don't navigate away from the field on tab when selecting an item
             if (event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
                 event.preventDefault();
@@ -178,6 +185,14 @@ function onTweetArrived(event, user, tl, tweets) {
                 event.preventDefault()
                 ipcRenderer.send('like', user, tweet.id_str)
             })
+            let mediaDiv = tweetDiv.find('.media-set')
+            if (mediaDiv) {
+                if (mediaDiv.children().length == 1) {
+                    mediaDiv.first().featherlight({openSpeed: 0})
+                } else {
+                    mediaDiv.featherlightGallery({openSpeed: 0, galleryFadeIn: 0, galleryFadeOut: 0})
+                }
+            }
             usernameMap[(tweet.user || tweet.sender).screen_name] = {
                 value: tweet.user.screen_name, label: tweet.user.name, img: tweet.user.profile_image_url_https
             }

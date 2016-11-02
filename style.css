@@ -19,6 +19,10 @@ p {
     padding: 0;
 }
 
+.clear-both {
+    clear: both;
+}
+
 #sidebar {
     position: fixed;
     left: 0px;
@@ -211,8 +215,28 @@ p {
     background: #FFF;
     margin: 15% auto;
     width: 80%;
+    max-width: 600px;
     padding: 12px;
     border-radius: 5px;
+}
+
+#tweet-dialog #tweet-dialog-actions {
+    width: 100%;
+    text-align: center;
+}
+
+#tweet-dialog #tweet-dialog-remaining-length {
+    float: left;
+    width: 4em;
+    color: #AAB8C2;
+    text-align: left;
+    margin-top: 6px;
+}
+
+#tweet-dialog #tweet-dialog-post {
+    float: right;
+    padding: 6px;
+    margin-top: 6px;
 }
 
 #tweet-dialog textarea {
