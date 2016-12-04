@@ -79,7 +79,7 @@ p {
 }
 
 .tweet p.tweet-text {
-    word-wrap: break-word;
+    word-break: break-all;
 }
 
 .tweet p.tweet-text .emoji {
