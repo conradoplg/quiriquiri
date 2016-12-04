@@ -113,32 +113,32 @@ function createQuotedDiv($, quotedStatus) {
     )
 }
 
-function createFooterDiv($, tweet) {
+function createFooterDiv($, tl, tweet) {
     return $('<div></div>', {
         class: 'footer'
     }).append(
         $('<a></a>', {
-            id: 'reply-action-' + tweet.id_str,
+            id: 'reply-action-' + tl + '-' + tweet.id_str,
             href: '#reply-' + tweet.id_str,
             class: 'action reply-action'
         }).append(
             $(REPLY_SVG, {}).toggleClass('action-icon')
         ),
         $('<a></a>', {
-            id: 'retweet-action-' + tweet.id_str,
+            id: 'retweet-action-' + tl + '-' + tweet.id_str,
             href: '#retweet-' + tweet.id_str,
             class: 'action retweet-action' + (tweet.retweeted ? ' retweeted' : '')
         }).append(
             $(RETWEET_SVG, {}).toggleClass('action-icon'),
             $('<span></span>', {
-                id: 'retweet-count-' + tweet.id_str,
+                id: 'retweet-count-' + tl + '-' + tweet.id_str,
                 class: 'count'
             }).text(
                 tweet.retweet_count > 0 ? '' + tweet.retweet_count : ''
             )
         ),
         $('<a></a>', {
-            id: 'like-action-' + tweet.id_str,
+            id: 'like-action-' + tl + '-' + tweet.id_str,
             href: '#like-' + tweet.id_str,
             class: 'action like-action' + (tweet.favorited ? ' liked' : '')
         }).append(
@@ -154,7 +154,7 @@ function createFooterDiv($, tweet) {
 }
 
 // Create a div with the specifid tweet rendered on it.
-function createTweetDiv($, tweet) {
+function createTweetDiv($, tl, tweet) {
     var shownStatus = tweet
     var retweeterUser
     if (tweet.retweeted_status) {
@@ -165,7 +165,7 @@ function createTweetDiv($, tweet) {
     var user = shownStatus.user || shownStatus.sender
 
     return $("<div></div>", {
-        id: 'tweet_' + tweet.id_str,
+        id: 'tweet_' + tl + '_' + tweet.id_str,
         class: "tweet"
     }).append(
         createProfileDiv($, user),
@@ -175,7 +175,7 @@ function createTweetDiv($, tweet) {
             createHeaderDiv($, user, retweeterUser, tweet),
             createTextP($, shownStatus),
             (quotedStatus ? createQuotedDiv($, quotedStatus) : ''),
-            createFooterDiv($, tweet)
+            createFooterDiv($, tl, tweet)
         )
     )
 }
