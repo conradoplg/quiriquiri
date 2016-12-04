@@ -82,11 +82,8 @@ p {
     word-break: break-all;
 }
 
-.tweet p.tweet-text .emoji {
-    vertical-align: middle;
-}
-
 .tweet .emoji {
+    vertical-align: middle;
     width: 20px;
     height: 20px;
 }

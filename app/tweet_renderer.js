@@ -164,7 +164,7 @@ function createTweetDiv($, tl, tweet) {
     var quotedStatus = shownStatus.quoted_status
     var user = shownStatus.user || shownStatus.sender
 
-    return $("<div></div>", {
+    let div = $("<div></div>", {
         id: 'tweet_' + tl + '_' + tweet.id_str,
         class: "tweet"
     }).append(
@@ -178,6 +178,8 @@ function createTweetDiv($, tl, tweet) {
             createFooterDiv($, tl, tweet)
         )
     )
+    twemoji.parse(div[0])
+    return div
 }
 
 function createEventDiv($, event) {
@@ -237,6 +239,7 @@ function createEventDiv($, event) {
     }).text(timestampStr))
     var tweetP = createTextP($, event.target_object, true)
     bodyDiv.append(tweetP);
+    twemoji.parse(tweetDiv[0])
     return tweetDiv;
 }
 
@@ -335,7 +338,6 @@ function createTextP($, tweet, isEvent = false) {
         }
     }
     addTextChunk($, tag, text.slice(offset).join(''))
-    twemoji.parse(tag[0])
     return tag
 }
 
