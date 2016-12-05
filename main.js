@@ -177,7 +177,6 @@ function onTweetArrived(event, user, tl, tweets) {
                 var mentions = tweetRenderer.getMentions(user.data, tweet).map((username) => '@' + username).join(' ') + ' '
                 showTweetDialog(mentions, user.data.screen_name, tweet.id_str)
             })
-            console.log('Added click on ' + '#reply-action-' + tl + '-' + tweet.id_str)
             $('#retweet-action-' + tl + '-' + tweet.id_str).click(function(event) {
                 event.preventDefault()
                 ipcRenderer.send('retweet', user, tweet.id_str)
