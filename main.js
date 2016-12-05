@@ -51,7 +51,7 @@ function getOnTweetContextMenu(timelineDiv, user, tl, tweet) {
                 ipcRenderer.send('mark-as-read', user, tl, tweet.id_str)
                 timelineDiv.children().each(function (i, elem) {
                     elem.remove()
-                    if (elem.id == 'tweet_' + tweet.id_str) {
+                    if (elem.id == 'tweet_' + tl + '_' + tweet.id_str) {
                         return false
                     }
                 })
