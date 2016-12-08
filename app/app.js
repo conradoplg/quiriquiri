@@ -54,6 +54,12 @@ class QuiriQuiriApp extends EventEmitter {
             this.emit('config-changed')
         })
     }
+
+    close() {
+        for (let username in this.users) {
+            this.users[username].stop()
+        }
+    }
 }
 
 module.exports.QuiriQuiriApp = QuiriQuiriApp
