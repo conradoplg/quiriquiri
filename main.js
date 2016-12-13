@@ -256,6 +256,22 @@ function onDocumentReady() {
             $('#modal').hide()
         }
     })
+    var didScroll = false
+    $(window).scroll(function() {
+        didScroll = true
+    })
+    setInterval(function () {
+        if (didScroll) {
+            didScroll = false
+            $('video.autoplay').each(function(){
+                if ($(this).is(":in-viewport")) {
+                    $(this)[0].play();
+                } else {
+                    $(this)[0].pause();
+                }
+            })
+        }
+    }, 500)
     setupPostDialog()
     ipcRenderer.send('main-ready')
 }

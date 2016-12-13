@@ -15,6 +15,7 @@
   "dependencies": {
     "electron-json-storage": "^2.0.0",
     "featherlight": "^1.4.1",
+    "is-in-viewport": "^2.4.2",
     "jquery": "^3.1.0",
     "jquery-ui-dist": "^1.12.1",
     "jsdom": "^9.5.0",

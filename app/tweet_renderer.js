@@ -305,8 +305,8 @@ function createTextP($, tweet, isEvent = false) {
                     class: 'media media-' + mediaCount,
                 }
                 if (ent.type == 'animated_gif') {
-                    videoOptions.autoplay = ''
                     videoOptions.loop = ''
+                    videoOptions.class += ' autoplay'
                 } else {
                     videoOptions.controls = ''
                 }
