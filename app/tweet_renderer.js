@@ -237,8 +237,10 @@ function createEventDiv($, event) {
     headerDiv.append(' ', $("<a></a>", {
         class: 'timestamp'
     }).text(timestampStr))
-    var tweetP = createTextP($, event.target_object, true)
-    bodyDiv.append(tweetP);
+    if (event.target_object) {
+        var tweetP = createTextP($, event.target_object, true)
+        bodyDiv.append(tweetP);
+    }
     twemoji.parse(tweetDiv[0])
     return tweetDiv;
 }
