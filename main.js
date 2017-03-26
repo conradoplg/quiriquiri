@@ -162,14 +162,15 @@ function onTweetArrived(event, user, tl, tweets) {
     for (let i = tweets.length - 1; i >= 0; i--) {
         try {
             let tweet = tweets[i]
-            if (tl == 'home' && arrivedTweetsMap[user.data.screen_name].has(tweet.id_str)) {
+            let id = tweet.retweeted_status ? tweet.retweeted_status.id_str : tweet.id_str
+            if (tl == 'home' && arrivedTweetsMap[user.data.screen_name].has(id)) {
                 log.debug('Tweet already shown')
                 continue
             }
             let tweetDiv = tweetRenderer.createTweetDiv($, tl, tweet)
             timelineDiv.append(tweetDiv)
             if (tl == 'home') {
-                arrivedTweetsMap[user.data.screen_name].add(tweet.id_str)
+                arrivedTweetsMap[user.data.screen_name].add(id)
             }
             tweetDiv.contextmenu(getOnTweetContextMenu(timelineDiv, user, tl, tweet))
             $('#reply-action-' + tl + '-' + tweet.id_str).click(function(event) {
