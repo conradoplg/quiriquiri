@@ -49,10 +49,17 @@ function getOnTweetContextMenu(timelineDiv, user, tl, tweet) {
             label: 'Mark this and previous and read',
             click() {
                 ipcRenderer.send('mark-as-read', user, tl, tweet.id_str)
-                timelineDiv.children().each(function (i, elem) {
-                    elem.remove()
+                let found = 0
+                timelineDiv.children().reverse().each(function (i, elem) {
                     if (elem.id == 'tweet_' + tl + '_' + tweet.id_str) {
-                        return false
+                        found = 1
+                    } else if (found > 0) {
+                        found++
+                    }
+                    if (found > 2) {
+                        $(elem).remove()
+                    } else if (found > 0) {
+                        $(elem).addClass('read')
                     }
                 })
                 $('body').scrollTop(0)
@@ -223,10 +230,24 @@ function onUserEvent(event, user, eventMsg) {
     }
 }
 
+var showRead = false
+
 function onDocumentReady() {
+    jQuery.fn.reverse = function() {
+        return this.pushStack(this.get().reverse(), arguments);
+    }
     $('#add_user').click(function(event) {
         event.preventDefault()
         ipcRenderer.send('add-user')
+    })
+    $('head').append("<style id='showReadStyle' type='text/css'></style>");
+    let showStyle = '.tweet.read { display: block; opacity: 0.6; }'
+    let hideStyle = '.tweet.read { display: none; opacity: 1; }'
+    $('#showReadStyle').text(hideStyle)
+    $('#show_read').click(function(event) {
+        event.preventDefault()
+        showRead = !showRead
+        $('#showReadStyle').text(showRead ? showStyle : hideStyle)
     })
     //open links externally by default
     $(document).on('click', 'a[href^="http"]', function(event) {
