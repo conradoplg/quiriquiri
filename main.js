@@ -26,7 +26,7 @@ function getTimelineId(user, tl) {
 function updateUnreadCount(user, tl) {
     let timelineDiv = $('#' + getTimelineId(user, tl))
     let username = user.data.screen_name
-    let count = timelineDiv.children().length
+    let count = timelineDiv.children().not('.read').length
     let counterStr = ' (' + count + ')'
     $('#counter_' + username + '_' + tl).text(count == 0 ? '' : counterStr)
 }
@@ -56,7 +56,7 @@ function getOnTweetContextMenu(timelineDiv, user, tl, tweet) {
                     } else if (found > 0) {
                         found++
                     }
-                    if (found > 2) {
+                    if (found > 50) {
                         $(elem).remove()
                     } else if (found > 0) {
                         $(elem).addClass('read')
