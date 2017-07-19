@@ -110,6 +110,7 @@ class User extends EventEmitter {
         }
         if (replyTo) {
             args.in_reply_to_status_id = replyTo
+            args.auto_populate_reply_metadata = true
         }
         this.twit.post('statuses/update', args)
         .catch((err) => {

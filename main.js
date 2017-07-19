@@ -183,6 +183,9 @@ function onTweetArrived(event, user, tl, tweets) {
             $('#reply-action-' + tl + '-' + tweet.id_str).click(function(event) {
                 event.preventDefault()
                 var mentions = tweetRenderer.getMentions(user.data, tweet).map((username) => '@' + username).join(' ') + ' '
+                //no need to include mentions anymore.
+                //TODO: show who is being mentioning in the GUI?
+                mentions = ''
                 showTweetDialog(mentions, user.data.screen_name, tweet.id_str)
             })
             $('#retweet-action-' + tl + '-' + tweet.id_str).click(function(event) {
