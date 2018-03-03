@@ -204,8 +204,9 @@ function onTweetArrived(event, user, tl, tweets) {
                     mediaDiv.featherlightGallery({openSpeed: 0, galleryFadeIn: 0, galleryFadeOut: 0})
                 }
             }
-            usernameMap[(tweet.user || tweet.sender).screen_name] = {
-                value: tweet.user.screen_name, label: tweet.user.name, img: tweet.user.profile_image_url_https
+            let sender = (tweet.user || tweet.sender)
+            usernameMap[sender.screen_name] = {
+                value: sender.screen_name, label: sender.name, img: sender.profile_image_url_https
             }
         } catch (err) {
             console.error(err.stack)

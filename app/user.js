@@ -106,7 +106,9 @@ class User extends EventEmitter {
     postTweet(text, replyTo) {
         log.debug('user.postTweet called with', [text, replyTo])
         var args = {
-            status: text
+            status: text,
+            enable_dm_commands: false,
+            weighted_character_count: true,
         }
         if (replyTo) {
             args.in_reply_to_status_id = replyTo
