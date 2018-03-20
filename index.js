@@ -6,6 +6,7 @@ var TwitterAuthorization = require('./app/authorization').TwitterAuthorization
 var quiri = new QuiriQuiriApp()
 
 var fs = require('fs');
+const windowStateKeeper = require('electron-window-state');
 
 const {
     app,
@@ -19,12 +20,21 @@ const {
 let win
 
 function createWindow() {
+    let mainWindowState = windowStateKeeper({
+        defaultWidth: 1000,
+        defaultHeight: 800
+    })
+
     win = new BrowserWindow({
-        width: 1600,
-        height: 800,
+        'x': mainWindowState.x,
+        'y': mainWindowState.y,
+        'width': mainWindowState.width,
+        'height': mainWindowState.height,
         title: 'QuiriQuiri',
         icon: `${__dirname}/resources/icons/64x64/quiriquiri.png`
     })
+
+    mainWindowState.manage(win);
 
     win.loadURL(`file://${__dirname}/index.html`)
     win.webContents.openDevTools()
