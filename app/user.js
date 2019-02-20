@@ -73,28 +73,28 @@ class User extends EventEmitter {
         this._timeout = setInterval(() => this._loadNewTweets(), 90 * 1000)
         setTimeout(() => this.loadFriends(), 0)
 
-        this._stream = this.twit.stream('user', {follow: this.id_str})
-        this._stream.on('error', (err) => {
-            log.debug('twit.stream on error', JSON.stringify([this.screen_name, err]))
-        })
-        this._stream.on('message', (tweet) => {
-            //log.debug('message from stream: ', JSON.stringify([this.screen_name, tweet]))
-        })
-        this._stream.on('tweet', (tweet) => {
-            //log.debug('tweet from stream: ', JSON.stringify([this.screen_name, tweet.text]))
-            this.emit('tweets-loaded', this, 'home', [tweet])
-        })
-        this._stream.on('user_event', (eventMsg) => {
-            log.debug('user_event: ', JSON.stringify([this.screen_name, eventMsg]))
-            this.emit('user-event', this, eventMsg)
-        })
+        // this._stream = this.twit.stream('user', {follow: this.id_str})
+        // this._stream.on('error', (err) => {
+        //     log.debug('twit.stream on error', JSON.stringify([this.screen_name, err]))
+        // })
+        // this._stream.on('message', (tweet) => {
+        //     //log.debug('message from stream: ', JSON.stringify([this.screen_name, tweet]))
+        // })
+        // this._stream.on('tweet', (tweet) => {
+        //     //log.debug('tweet from stream: ', JSON.stringify([this.screen_name, tweet.text]))
+        //     this.emit('tweets-loaded', this, 'home', [tweet])
+        // })
+        // this._stream.on('user_event', (eventMsg) => {
+        //     log.debug('user_event: ', JSON.stringify([this.screen_name, eventMsg]))
+        //     this.emit('user-event', this, eventMsg)
+        // })
     }
 
     stop() {
         assert(this._timeout)
         clearInterval(this._timeout)
         this._timeout = null
-        this._stream.stop()
+        // this._stream.stop()
     }
 
     markAsRead(tl, id_str) {
@@ -116,7 +116,7 @@ class User extends EventEmitter {
         }
         this.twit.post('statuses/update', args)
         .catch((err) => {
-            log.debug('caught error', err)
+            log.debug('caught error postTweet', err)
             this.emit('post-tweet-error', err)
         }).then((result) => {
             if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
@@ -130,7 +130,7 @@ class User extends EventEmitter {
     retweet(id) {
         this.twit.post('statuses/retweet/:id', {id: id})
         .catch((err) => {
-            log.debug('caught error', err)
+            log.debug('caught error retweet', err)
             this.emit('retweet-error', err, id)
         }).then((result) => {
             if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
@@ -144,7 +144,7 @@ class User extends EventEmitter {
     like(id) {
         this.twit.post('favorites/create', {id: id})
         .catch((err) => {
-            log.debug('caught error', err)
+            log.debug('caught error like', err)
             this.emit('like-error', err, id)
         }).then((result) => {
             if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
@@ -162,12 +162,17 @@ class User extends EventEmitter {
 
     _loadNewTweets() {
         assert(this.config)
-        for (let tl of ['home', 'mentions', 'dms']) {
+        for (let tl of ['home', 'mentions']) {
             this._loadTweets(tl, this.since_id[tl], null, null, (err, all_tweets) => {
-                log.debug('_loadTweets callback called with tweet count', all_tweets.length)
-                if (all_tweets.length > 0) {
-                    this.since_id[tl] = all_tweets[0].id_str
-                    log.debug('Updated since_id', this.since_id[tl])
+                if (err) {
+                    log.debug(err)
+                }
+                if (all_tweets) {
+                    log.debug('_loadTweets callback called with tweet count', all_tweets.length)
+                    if (all_tweets.length > 0) {
+                        this.since_id[tl] = all_tweets[0].id_str
+                        log.debug('Updated since_id', this.since_id[tl])
+                    }
                 }
             })
         }
@@ -190,24 +195,25 @@ class User extends EventEmitter {
         let urls = {
             home: 'statuses/home_timeline',
             mentions: 'statuses/mentions_timeline',
-            dms: 'direct_messages'
+            // TODO: DMs changed format
+            // dms: 'direct_messages/events/list'
         }
         assert(urls[tl], 'Invalid tl argument :' + tl)
         log.debug('GET ' + urls[tl], args)
         this.twit.get(urls[tl], args)
             .catch((err) => {
-                log.debug('caught error')
+                log.debug('caught error ' + urls[tl])
                 if (callback) {
                     callback(err)
                 }
                 this.emit('load-error', err)
             })
             .then((result) => {
-                var tweets = result.data
-                if (!result.resp || result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
-                    this.emit('load-error', result.data)
+                if (!result || !result.resp || result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
+                    this.emit('load-error', result)
                     return
                 }
+                var tweets = result.data
                 log.debug('Tweets returned: ', tweets.length)
                 if (all_tweets.length > 0 && tweets.length > 0 &&
                     all_tweets[all_tweets.length - 1].id_str == tweets[0].id_str) {

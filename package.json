@@ -1,6 +1,6 @@
 {
   "name": "quiriquiri",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "QuiriQuiri: a Twitter client",
   "main": "index.js",
   "scripts": {

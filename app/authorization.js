@@ -15,7 +15,7 @@ var TwitterAuthorization = module.exports.TwitterAuthorization = function(oauthC
 
 TwitterAuthorization.prototype.getRequestToken = function(callback) {
     this.oa.getOAuthRequestToken((error, oauthToken, oauthTokenSecret, results) => {
-        if (error && errorCallback) {
+        if (error && callback) {
             callback(error)
         } else {
             this.oauthToken = oauthToken
