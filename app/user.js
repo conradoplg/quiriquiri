@@ -258,7 +258,7 @@ class User extends EventEmitter {
                     this.emit('load-friend-error', result.data)
                     return
                 }
-                log.debug('Friends returned: ', friends.length)
+                log.debug('Friends returned: ', JSON.stringify(friends))
                 all_friends = all_friends.concat(friends)
                 if (result.data.next_cursor_str != '0') {
                     this._loadFriends(all_friends, result.data.next_cursor_str, callback)
