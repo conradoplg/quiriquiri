@@ -11,13 +11,14 @@
     "test": "./node_modules/.bin/mocha --reporter spec -r test/setup.js",
     "start": "electron --disable-gpu .",
     "format": "find . -path ./node_modules -prune -o -name '*.js' -print | xargs js-beautify -r -n",
-    "pack": "build --dir",
-    "dist": "build --linux --win --x64"
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win --x64"
   },
   "author": "Conrado P. L. Gouvea",
   "license": "MIT",
   "dependencies": {
-    "electron-window-state": "^4.1.1",
+    "electron-debug": "^2.1.0",
+    "electron-window-state": "^5.0.3",
     "featherlight": "^1.4.1",
     "is-in-viewport": "^2.4.2",
     "jquery": "^3.1.0",
@@ -37,7 +38,6 @@
     "mocha": "^6.0.2"
   },
   "build": {
-    "appId": "net.cryptoland.quiriquiri",
-    "category": "Network"
+    "appId": "net.cryptoland.quiriquiri"
   }
 }

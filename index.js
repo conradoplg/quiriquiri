@@ -12,8 +12,15 @@ const {
     app,
     BrowserWindow,
     ipcMain,
-    protocol
+    protocol,
 } = require('electron')
+
+const debug = require('electron-debug');
+
+debug({
+    enabled: true,
+    devToolsMode: 'right'
+});
 
 process.on('unhandledRejection', r => console.log(r));
 
@@ -43,7 +50,7 @@ function createWindow() {
     mainWindowState.manage(win);
 
     win.loadURL(`file://${__dirname}/index.html`)
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
 
     win.on('closed', () => {
         // Dereference the window object, usually you would store windows
