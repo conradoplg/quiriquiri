@@ -1,5 +1,6 @@
 const assert = require('assert');
 var OAuth = require('mashape-oauth').OAuth;
+const log = require('./log')
 
 var TwitterAuthorization = module.exports.TwitterAuthorization = function(oauthCallback, consumerKey, consumerSecret) {
     this.oa = new OAuth({
@@ -14,7 +15,9 @@ var TwitterAuthorization = module.exports.TwitterAuthorization = function(oauthC
 }
 
 TwitterAuthorization.prototype.getRequestToken = function(callback) {
+    log.debug('getRequestToken')
     this.oa.getOAuthRequestToken((error, oauthToken, oauthTokenSecret, results) => {
+        log.debug('getOAuthRequestToken: ' + JSON.stringify([error, oauthToken, oauthTokenSecret, results]))
         if (error && callback) {
             callback(error)
         } else {
@@ -26,6 +29,7 @@ TwitterAuthorization.prototype.getRequestToken = function(callback) {
 }
 
 TwitterAuthorization.prototype.getAccessToken = function(oauthParams, callback) {
+    log.debug('getAccessToken')
     oauthToken = oauthParams['oauth_token']
     oauthVerifier = oauthParams['oauth_verifier']
     assert.equal(this.oauthToken, oauthToken, "Returned oauth_token is different then requested.")
@@ -34,6 +38,7 @@ TwitterAuthorization.prototype.getAccessToken = function(oauthParams, callback) 
         oauth_token: oauthToken,
         oauth_secret: this.oauthTokenSecret
     }, (error, token, secret, result) => {
+        log.debug('getOAuthAccessToken: ' + JSON.stringify([error, token, secret, result]))
         if (error && callback) {
             callback(error)
         } else {

@@ -19,7 +19,8 @@ const debug = require('electron-debug');
 
 debug({
     enabled: true,
-    devToolsMode: 'right'
+    devToolsMode: 'right',
+    showDevTools: false,
 });
 
 process.on('unhandledRejection', r => console.log(r));
@@ -62,8 +63,8 @@ function createWindow() {
 
     protocol.registerFileProtocol('quiriquiri', (request, callback) => {
         const url = require('url').parse(request.url, true)
-        console.log(JSON.stringify(url.query))
-        console.log(url.hostname)
+        log.debug(JSON.stringify(url.query))
+        log.debug(url.hostname)
         callback()
         if (url.hostname == 'authorize') {
             twitterAuthorization.getAccessToken(url.query, function(error, token, secret) {
@@ -118,7 +119,6 @@ ipcMain.on('add-user', () => {
                 webPreferences: {
                     nodeIntegration: false,
                     nodeIntegrationInWorker: false,
-                    partition: "twitter",
                 }
             })
             addUserWin.loadURL(`https://api.twitter.com/oauth/authorize?oauth_token=${token}`)
