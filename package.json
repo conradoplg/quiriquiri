@@ -1,11 +1,15 @@
 {
   "name": "quiriquiri",
-  "version": "1.0.1",
+  "version": "2.0.9",
   "description": "QuiriQuiri: a Twitter client",
+  "repository": {
+    "type": "git",
+    "url": "https://https://github.com/conradoplg/quiriquiri.git"
+  },
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec -r test/setup.js",
-    "start": "electron .",
+    "start": "electron --disable-gpu .",
     "format": "find . -path ./node_modules -prune -o -name '*.js' -print | xargs js-beautify -r -n",
     "pack": "build --dir",
     "dist": "build --linux --win --x64"
@@ -13,7 +17,6 @@
   "author": "Conrado P. L. Gouvea",
   "license": "MIT",
   "dependencies": {
-    "electron-json-storage": "^2.0.0",
     "electron-window-state": "^4.1.1",
     "featherlight": "^1.4.1",
     "is-in-viewport": "^2.4.2",
@@ -25,13 +28,13 @@
     "twemoji": "^2.2.0",
     "twit": "^2.2.5",
     "twitter-text": "^1.14.0",
-    "winston": "^2.2.0",
+    "winston": "^3.2.1",
     "zpad": "^0.5.0"
   },
   "devDependencies": {
-    "electron-builder": "^7.14.2",
-    "electron": "^1.2.0",
-    "mocha": "^3.0.2"
+    "electron": "^4.0.6",
+    "electron-builder": "^20.39.0",
+    "mocha": "^6.0.2"
   },
   "build": {
     "appId": "net.cryptoland.quiriquiri",
