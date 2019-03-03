@@ -33,7 +33,11 @@ function createWindow() {
         'width': mainWindowState.width,
         'height': mainWindowState.height,
         title: 'QuiriQuiri',
-        icon: `${__dirname}/resources/icons/64x64/quiriquiri.png`
+        icon: `${__dirname}/resources/icons/64x64/quiriquiri.png`,
+        webPreferences: {
+            // TODO: fix
+            nodeIntegration: true,
+        }
     })
 
     mainWindowState.manage(win);
@@ -103,7 +107,12 @@ ipcMain.on('add-user', () => {
             console.log(JSON.stringify(error))
         } else {
             addUserWin = new BrowserWindow({
-                parent: win
+                parent: win,
+                webPreferences: {
+                    nodeIntegration: false,
+                    nodeIntegrationInWorker: false,
+                    partition: "twitter",
+                }
             })
             addUserWin.loadURL(`https://api.twitter.com/oauth/authorize?oauth_token=${token}`)
             addUserWin.show()
