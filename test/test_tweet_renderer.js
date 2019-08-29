@@ -36,6 +36,10 @@ require("jsdom").env("", function(err, window) {
             tweet = JSON.parse(fs.readFileSync('test/tweet_sample_dm.json', 'utf8'));
             p = tr.createTextP($, tweet)
             assert.strictEqual(p.html().trim(), tweet.html)
+
+            tweet = JSON.parse(fs.readFileSync('test/tweet_sample_linebreak.json', 'utf8'));
+            p = tr.createTextP($, tweet)
+            assert.strictEqual(p.html(), tweet.html)
         })
         it("renders the tweet", function() {
             var div

@@ -351,7 +351,7 @@ function addTextChunk($, tag, text) {
     text = text.replace(/&lt;/g, '<')
     text = text.replace(/&amp;/g, '&')
     // Using tag[0].ownerDocument instead of just 'document' because the latter is not accessible in tests
-    tag.append(tag[0].ownerDocument.createTextNode(text.replace(/\n*$/, "")))
+    tag.append(tag[0].ownerDocument.createTextNode(text))
 }
 
 
