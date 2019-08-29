@@ -51,6 +51,11 @@ require("jsdom").env("", function(err, window) {
             tweet = JSON.parse(fs.readFileSync('test/tweet_sample_dm.json', 'utf8'))
             div = tr.createTweetDiv($, 'home', tweet)
             assert.strictEqual(div.html(), tweet.full_html)
+
+            div = $("<div></div>")
+            tweet = JSON.parse(fs.readFileSync('test/tweet_sample_retweet.json', 'utf8'))
+            div = tr.createTweetDiv($, 'home', tweet)
+            assert.strictEqual(div.html(), tweet.full_html)
         })
         it("gets mentions", function() {
             var tweet

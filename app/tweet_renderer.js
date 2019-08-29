@@ -168,17 +168,17 @@ function createTweetDiv($, tl, tweet) {
     var user = shownStatus.user || shownStatus.sender
 
     let div = $("<div></div>", {
-        id: 'tweet_' + tl + '_' + tweet.id_str,
+        id: 'tweet_' + tl + '_' + shownStatus.id_str,
         class: "tweet"
     }).append(
         createProfileDiv($, user),
         $("<div></div>", {
             class: 'body'
         }).append(
-            createHeaderDiv($, user, retweeterUser, tweet),
+            createHeaderDiv($, user, retweeterUser, shownStatus),
             createTextP($, shownStatus),
             (quotedStatus ? createQuotedDiv($, quotedStatus) : ''),
-            createFooterDiv($, tl, tweet)
+            createFooterDiv($, tl, shownStatus)
         )
     )
     twemoji.parse(div[0])
