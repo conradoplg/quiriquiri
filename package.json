@@ -17,11 +17,11 @@
   "author": "Conrado P. L. Gouvea",
   "license": "MIT",
   "dependencies": {
-    "electron-debug": "^2.1.0",
+    "electron-debug": "^2.2.0",
     "electron-window-state": "^5.0.3",
-    "featherlight": "^1.4.1",
+    "featherlight": "^1.7.14",
     "is-in-viewport": "^2.4.2",
-    "jquery": "^3.1.0",
+    "jquery": "^3.4.1",
     "jquery-ui-dist": "^1.12.1",
     "jsdom": "^9.5.0",
     "mashape-oauth": "^0.1.71",
@@ -33,9 +33,9 @@
     "zpad": "^0.5.0"
   },
   "devDependencies": {
-    "electron": "^4.0.6",
-    "electron-builder": "^20.39.0",
-    "mocha": "^6.0.2"
+    "electron": "^6.0.5",
+    "electron-builder": "^21.2.0",
+    "mocha": "^6.2.0"
   },
   "build": {
     "appId": "net.cryptoland.quiriquiri"
