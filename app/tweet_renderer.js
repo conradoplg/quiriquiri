@@ -37,7 +37,10 @@ function getTimestamp(created_at) {
         hour: "2-digit",
         minute: "2-digit"
     }
-    if (timestamp.getMonth() != now.getMonth() || timestamp.getDate() != now.getDate()) {
+    if (timestamp.getMonth() != now.getMonth() ||
+        timestamp.getDate() != now.getDate() ||
+        timestamp.getFullYear() != now.getFullYear()) {
+
         options.day = '2-digit'
         options.month = '2-digit'
         options.weekday = 'short'

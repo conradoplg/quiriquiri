@@ -76,34 +76,35 @@ describe("User", function() {
         let data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
         stub.withArgs('statuses/home_timeline').onCall(0).returns(
             new Promise(function (resolve, reject) {
-                resolve({data: data.slice(0, 200), resp: {statusCode: 200}})
+                resolve({data: data.slice(0, 1), resp: {statusCode: 200}})
         }))
         stub.withArgs('statuses/home_timeline').onCall(1).returns(
             new Promise(function (resolve, reject) {
-                resolve({data: data.slice(199, 300), resp: {statusCode: 200}})
+                resolve({data: data.slice(0, 1), resp: {statusCode: 200}})
         }))
         stub.withArgs('statuses/mentions_timeline').onCall(0).returns(
             new Promise(function (resolve, reject) {
-                resolve({data: data.slice(300, 305), resp: {statusCode: 200}})
+                resolve({data: data.slice(0, 1), resp: {statusCode: 200}})
         }))
-        stub.withArgs('direct_messages').onCall(0).returns(
-            new Promise(function (resolve, reject) {
-                resolve({data: data.slice(305, 307), resp: {statusCode: 200}})
-        }))
+        // stub.withArgs('direct_messages').onCall(0).returns(
+        //     new Promise(function (resolve, reject) {
+        //         resolve({data: data.slice(0, 1), resp: {statusCode: 200}})
+        // }))
         var doneCount = 0
         user.on('tweets-loaded', (_user, tl, tweets) => {
+            console.log(tl)
             if (tl == 'home') {
-                assert.strictEqual(tweets.length, 300)
+                assert.strictEqual(tweets.length, 1)
                 assert.strictEqual(user.since_id[tl], data[0].id_str)
             }
             if (tl == 'mentions') {
-                assert.strictEqual(tweets.length, 5)
+                assert.strictEqual(tweets.length, 1)
             }
             if (tl == 'dms') {
-                assert.strictEqual(tweets.length, 2)
+                assert.strictEqual(tweets.length, 1)
             }
             doneCount++
-            if (doneCount == 3) {
+            if (doneCount == 2) {
                 done()
             }
         })
