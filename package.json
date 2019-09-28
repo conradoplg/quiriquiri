@@ -1,6 +1,6 @@
 {
   "name": "quiriquiri",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "QuiriQuiri: a Twitter client",
   "repository": {
     "type": "git",
@@ -26,14 +26,14 @@
     "jsdom": "^9.5.0",
     "mashape-oauth": "^0.1.71",
     "sinon": "^1.17.6",
-    "twemoji": "^12.1.2",
+    "twemoji": "^12.1.3",
     "twit": "^2.2.5",
     "twitter-text": "^1.14.0",
     "winston": "^3.2.1",
     "zpad": "^0.5.0"
   },
   "devDependencies": {
-    "electron": "^6.0.5",
+    "electron": "^6.0.10",
     "electron-builder": "^21.2.0",
     "mocha": "^6.2.0"
   },
