@@ -21,7 +21,7 @@
     "electron-window-state": "^5.0.3",
     "featherlight": "^1.7.14",
     "is-in-viewport": "^2.4.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jquery-ui-dist": "^1.12.1",
     "jsdom": "^9.5.0",
     "mashape-oauth": "^0.1.71",
