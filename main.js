@@ -6,8 +6,16 @@ const {
 } = nodeRequire('electron')
 const {
     Menu,
-    MenuItem
+    MenuItem,
+    BrowserWindow
 } = remote
+var fs = nodeRequire('fs');
+
+var secret = nodeRequire('./secret')
+var QuiriQuiriApp = nodeRequire('./app/app').QuiriQuiriApp
+var TwitterAuthorization = nodeRequire('./app/authorization').TwitterAuthorization
+var quiri = new QuiriQuiriApp()
+
 var shell = nodeRequire('electron').shell
 var twitterText = nodeRequire('twitter-text')
 
@@ -48,7 +56,7 @@ function getOnTweetContextMenu(timelineDiv, user, tl, tweet) {
         menu.append(new MenuItem({
             label: 'Mark this and previous and read',
             click() {
-                ipcRenderer.send('mark-as-read', user, tl, tweet.id_str)
+                user.markAsRead(tl, tweet.id_str)
                 let found = 0
                 timelineDiv.children().reverse().each(function (i, elem) {
                     if (elem.id == 'tweet_' + tl + '_' + tweet.id_str) {
@@ -98,7 +106,10 @@ function setupPostDialog() {
         $('#tweet-dialog-post').prop('disabled', true)
         $('#tweet-dialog-text').prop('disabled', true)
         setTimeout(() => {
-            ipcRenderer.send('post-tweet', $('#tweet-dialog-text').val(), $('#tweet-dialog-author').val(), $('#tweet-dialog-reply-to').val())
+            let author = $('#tweet-dialog-author').val()
+            let text = $('#tweet-dialog-text').val()
+            let replyTo = $('#tweet-dialog-reply-to').val()
+            quiri.users[author].postTweet(text, replyTo)
         }, 2000)
     })
     let tweetDialogText = $('#tweet-dialog-text')
@@ -190,11 +201,11 @@ function onTweetArrived(event, user, tl, tweets) {
             })
             $('#retweet-action-' + tl + '-' + tweet.id_str).click(function(event) {
                 event.preventDefault()
-                ipcRenderer.send('retweet', user, tweet.id_str)
+                quiri.users[user.data.screen_name].retweet(tweet.id_str)
             })
             $('#like-action-' + tl + '-' + tweet.id_str).click(function(event) {
                 event.preventDefault()
-                ipcRenderer.send('like', user, tweet.id_str)
+                quiri.users[user.data.screen_name].like(tweet.id_str)
             })
             let mediaDiv = tweetDiv.find('.media-set')
             if (mediaDiv) {
@@ -242,7 +253,7 @@ function onDocumentReady() {
     }
     $('#add_user').click(function(event) {
         event.preventDefault()
-        ipcRenderer.send('add-user')
+        addUser()
     })
     $('head').append("<style id='showReadStyle' type='text/css'></style>");
     let showStyle = '.tweet.read { display: block; opacity: 0.6; }'
@@ -299,41 +310,76 @@ function onDocumentReady() {
         }
     }, 500)
     setupPostDialog()
-    ipcRenderer.send('main-ready')
+    mainReady()
 }
 
-ipcRenderer.on('tweet-arrived', onTweetArrived)
+function mainReady() {
+    quiri.on('config-changed', () => {
+        log.debug('quiri.on config-changed called')
+        let config = {}
+        log.debug('saving config...')
+        quiri.saveConfig(config)
+        log.debug('writing to file...')
+        fs.writeFileSync('config.json', JSON.stringify(config, null, 4))
+    })
 
-ipcRenderer.on('user-added', onUserAdded)
-
-ipcRenderer.on('tweet-posted', (event, user, tweet) => {
-    $('#modal').hide()
-})
-
-ipcRenderer.on('post-tweet-error', defaultErrorHandler)
-
-ipcRenderer.on('liked', (event, user, tweetId) => {
-    $('#like-action-home-' + tweetId).toggleClass('liked')
-    $('#like-action-mentions-' + tweetId).toggleClass('liked')
-})
-
-ipcRenderer.on('like-error', defaultErrorHandler)
-
-ipcRenderer.on('retweeted', (event, user, tweetId) => {
-    $('#retweet-action-home-' + tweetId).toggleClass('retweeted')
-    $('#retweet-action-mentions-' + tweetId).toggleClass('retweeted')
-})
-
-ipcRenderer.on('retweet-error', defaultErrorHandler)
-
-ipcRenderer.on('user-event', onUserEvent)
-
-ipcRenderer.on('friends-loaded', (event, user, friends) => {
-    for (let f of friends) {
-        usernameMap[f.screen_name] = {
-            value: f.screen_name, label: f.name, img: f.profile_image_url_https
+    let config
+    try {
+        config = JSON.parse(fs.readFileSync('config.json', 'utf8'))
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            log.info('Config file not found, loading empty config')
+            config = {}
+        } else {
+            throw err;
         }
     }
+    quiri.loadConfig(config)
+}
+
+quiri.on('user-added', (user) => {
+    log.debug('quiri.on user-added called with', user)
+    onUserAdded(null, user)
+    user.on('tweets-loaded', function(user, tl, tweets) {
+        onTweetArrived(null, user, tl, tweets)
+    })
+    user.on('load-error', function(err) {
+        console.log(err)
+    })
+    user.on('friends-loaded', function(user, friends) {
+        for (let f of friends) {
+            usernameMap[f.screen_name] = {
+                value: f.screen_name, label: f.name, img: f.profile_image_url_https
+            }
+        }
+    })
+    user.on('load-friend-error', function(err) {
+        console.log(err)
+    })
+    user.on('tweet-posted', (user, tweet) => {
+        $('#modal').hide()
+    })
+    user.on('post-tweet-error', (err) => {
+        defaultErrorHandler(null, err)
+    })
+    user.on('liked', (user, tweetId) => {
+        $('#like-action-home-' + tweetId).toggleClass('liked')
+        $('#like-action-mentions-' + tweetId).toggleClass('liked')
+    })
+    user.on('like-error', (err, tweetId) => {
+        defaultErrorHandler(null, err)
+    })
+    user.on('retweeted', (user, tweetId) => {
+        $('#retweet-action-home-' + tweetId).toggleClass('retweeted')
+        $('#retweet-action-mentions-' + tweetId).toggleClass('retweeted')
+    })
+    user.on('retweet-error', (err, tweetId) => {
+        defaultErrorHandler(null, err)
+    })
+    user.on('user-event', (user, event) => {
+        onUserEvent(null, user, event)
+    })
+    user.start()
 })
 
 $(document).ready(onDocumentReady)
@@ -341,3 +387,35 @@ $(document).ready(onDocumentReady)
 window.onerror = function(error, url, line) {
     log.error(error, JSON.stringify([url, line]))
 }
+
+var twitterAuthorization = new TwitterAuthorization('quiriquiri://authorize/', secret['consumer_key'], secret['consumer_secret'])
+var addUserWin = null
+
+function addUser() {
+    twitterAuthorization.getRequestToken((error, token, secret) => {
+        if (error) {
+            console.log(JSON.stringify(error))
+        } else {
+            addUserWin = new BrowserWindow({
+                parent: win,
+                webPreferences: {
+                    nodeIntegration: false,
+                    nodeIntegrationInWorker: false,
+                }
+            })
+            addUserWin.loadURL(`https://api.twitter.com/oauth/authorize?oauth_token=${token}`)
+            addUserWin.show()
+        }
+    })
+}
+
+ipcRenderer.on('authorized', (event, query) => {
+    twitterAuthorization.getAccessToken(query, function(error, token, secret) {
+        if (error) {
+            log.error(JSON.stringify(error))
+        } else {
+            log.debug(`token ${token} secret ${secret}`)
+            quiri.addUser(token, secret)
+        }
+    })
+})
