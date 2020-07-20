@@ -1,0 +1,191 @@
+{
+    "contributors": null,
+    "coordinates": null,
+    "created_at": "Tue Oct 04 00:20:01 +0000 2016",
+    "display_text_range": [
+        0,
+        99
+    ],
+    "entities": {
+        "hashtags": [
+            {
+                "indices": [
+                    96,
+                    99
+                ],
+                "text": "G1"
+            }
+        ],
+        "media": [
+            {
+                "display_url": "pic.twitter.com/whRBw3XVwn",
+                "expanded_url": "https://twitter.com/g1/status/783099317099696128/photo/1",
+                "id": 783089602294911000,
+                "id_str": "783089602294910976",
+                "indices": [
+                    100,
+                    123
+                ],
+                "media_url": "http://pbs.twimg.com/media/Ct4X2CQXEAAjuyJ.jpg",
+                "media_url_https": "https://pbs.twimg.com/media/Ct4X2CQXEAAjuyJ.jpg",
+                "sizes": {
+                    "large": {
+                        "h": 465,
+                        "resize": "fit",
+                        "w": 620
+                    },
+                    "medium": {
+                        "h": 465,
+                        "resize": "fit",
+                        "w": 620
+                    },
+                    "small": {
+                        "h": 465,
+                        "resize": "fit",
+                        "w": 620
+                    },
+                    "thumb": {
+                        "h": 150,
+                        "resize": "crop",
+                        "w": 150
+                    }
+                },
+                "type": "photo",
+                "url": "https://t.co/whRBw3XVwn"
+            }
+        ],
+        "symbols": [],
+        "urls": [
+            {
+                "display_url": "glo.bo/2dCoxXb",
+                "expanded_url": "http://glo.bo/2dCoxXb",
+                "indices": [
+                    72,
+                    95
+                ],
+                "url": "https://t.co/Vfqyjm3OxS"
+            }
+        ],
+        "user_mentions": []
+    },
+    "extended_entities": {
+        "media": [
+            {
+                "display_url": "pic.twitter.com/whRBw3XVwn",
+                "expanded_url": "https://twitter.com/g1/status/783099317099696128/photo/1",
+                "id": 783089602294911000,
+                "id_str": "783089602294910976",
+                "indices": [
+                    100,
+                    123
+                ],
+                "media_url": "http://pbs.twimg.com/media/Ct4X2CQXEAAjuyJ.jpg",
+                "media_url_https": "https://pbs.twimg.com/media/Ct4X2CQXEAAjuyJ.jpg",
+                "sizes": {
+                    "large": {
+                        "h": 465,
+                        "resize": "fit",
+                        "w": 620
+                    },
+                    "medium": {
+                        "h": 465,
+                        "resize": "fit",
+                        "w": 620
+                    },
+                    "small": {
+                        "h": 465,
+                        "resize": "fit",
+                        "w": 620
+                    },
+                    "thumb": {
+                        "h": 150,
+                        "resize": "crop",
+                        "w": 150
+                    }
+                },
+                "type": "photo",
+                "url": "https://t.co/whRBw3XVwn"
+            }
+        ]
+    },
+    "favorite_count": 78,
+    "favorited": true,
+    "full_text": "Novo filme de Tim Burton lidera fim de semana nos EUA, com lucro tímido https://t.co/Vfqyjm3OxS #G1 https://t.co/whRBw3XVwn",
+    "geo": null,
+    "id": 783099317099696100,
+    "id_str": "783099317099696128",
+    "in_reply_to_screen_name": null,
+    "in_reply_to_status_id": null,
+    "in_reply_to_status_id_str": null,
+    "in_reply_to_user_id": null,
+    "in_reply_to_user_id_str": null,
+    "is_quote_status": false,
+    "lang": "pt",
+    "place": null,
+    "possibly_sensitive": false,
+    "possibly_sensitive_appealable": false,
+    "retweet_count": 12,
+    "retweeted": false,
+    "source": "<a href=\"https://about.twitter.com/products/tweetdeck\" rel=\"nofollow\">TweetDeck</a>",
+    "truncated": false,
+    "user": {
+        "contributors_enabled": false,
+        "created_at": "Tue Sep 11 04:05:49 +0000 2007",
+        "default_profile": false,
+        "default_profile_image": false,
+        "description": "O portal de notícias da Globo",
+        "entities": {
+            "description": {
+                "urls": []
+            },
+            "url": {
+                "urls": [
+                    {
+                        "display_url": "g1.com.br",
+                        "expanded_url": "http://g1.com.br",
+                        "indices": [
+                            0,
+                            22
+                        ],
+                        "url": "http://t.co/f4ZCAE4llQ"
+                    }
+                ]
+            }
+        },
+        "favourites_count": 104,
+        "follow_request_sent": false,
+        "followers_count": 8540167,
+        "following": true,
+        "friends_count": 206,
+        "geo_enabled": false,
+        "has_extended_profile": false,
+        "id": 8802752,
+        "id_str": "8802752",
+        "is_translation_enabled": false,
+        "is_translator": false,
+        "lang": "pt",
+        "listed_count": 16562,
+        "location": "Brasil",
+        "name": "G1",
+        "notifications": false,
+        "profile_background_color": "F0F0F0",
+        "profile_background_image_url": "http://pbs.twimg.com/profile_background_images/378800000030360744/cce1da5d2f091b9eb6a9eb9e37c28831.jpeg",
+        "profile_background_image_url_https": "https://pbs.twimg.com/profile_background_images/378800000030360744/cce1da5d2f091b9eb6a9eb9e37c28831.jpeg",
+        "profile_background_tile": false,
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/8802752/1471946432",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/652253314210467840/gdCnHsYD_normal.jpg",
+        "profile_image_url_https": "https://pbs.twimg.com/profile_images/652253314210467840/gdCnHsYD_normal.jpg",
+        "profile_link_color": "A80000",
+        "profile_sidebar_border_color": "FFFFFF",
+        "profile_sidebar_fill_color": "FFFFFF",
+        "profile_text_color": "000000",
+        "profile_use_background_image": false,
+        "protected": false,
+        "screen_name": "g1",
+        "statuses_count": 487085,
+        "time_zone": "Brasilia",
+        "url": "http://t.co/f4ZCAE4llQ",
+        "utc_offset": -10800,
+        "verified": true
+    }
+}

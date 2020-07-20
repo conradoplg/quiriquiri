@@ -8,7 +8,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec -r test/setup.js",
+    "test": "./node_modules/.bin/mocha --reporter spec -r jsdom-global/register",
     "start": "electron --disable-gpu .",
     "format": "find . -path ./node_modules -prune -o -name '*.js' -print | xargs js-beautify -r -n",
     "pack": "electron-builder --dir",
@@ -23,8 +23,8 @@
     "is-in-viewport": "^3.0.4",
     "jquery": "^3.5.1",
     "jquery-ui-dist": "^1.12.1",
-    "jsdom": "^16.3.0",
     "mashape-oauth": "^0.1.71",
+    "pino": "^6.4.0",
     "sinon": "^9.0.2",
     "twemoji": "^13.0.0",
     "twit": "^2.2.11",
@@ -35,6 +35,8 @@
   "devDependencies": {
     "electron": "^9.1.0",
     "electron-builder": "^22.7.0",
+    "jsdom": "16.3.0",
+    "jsdom-global": "3.0.2",
     "mocha": "^8.0.1"
   },
   "build": {

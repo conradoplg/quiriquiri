@@ -1,0 +1,379 @@
+{
+    "full_html": "<div class=\"profile\"><p><img class=\"profile-image\" src=\"https://pbs.twimg.com/profile_images/578955396951470080/hTqw35Yz_normal.jpeg\"></p></div><div class=\"body\"><p class=\"header\"><span class=\"name\">rita kozlov</span> <a class=\"username\" href=\"https://twitter.com/ritakozlov_\">@ritakozlov_</a><span class=\"retweeted-by\"> retweeted by </span><span class=\"name\">Cloudflare</span> <a class=\"username\" href=\"https://twitter.com/Cloudflare\">@Cloudflare</a> <a class=\"timestamp\" href=\"https://twitter.com/ritakozlov_/status/1166747417133420545\" target=\"_blank\">Wed, 08/28/19, 01:20 PM</a></p><p class=\"tweet-text\">DNA sequencing data analysis is probably one of the coolest @<a href=\"https://twitter.com/Cloudflare\">Cloudflare</a> Workers use cases I’ve seen!   \nSo many possibilities with #<a href=\"https://twitter.com/search?q=serverless\">serverless</a> WebAssembly. </p><blockquote class=\"quoted-tweet\" data-href=\"https://twitter.com/WasmWeekly/status/1166743967716843520\"><p class=\"header\"><span class=\"name\">WebAssemblyWeekly</span> <a class=\"username\" href=\"https://twitter.com/WasmWeekly\">@WasmWeekly</a></p><p class=\"tweet-text\">Beyond The Browser: Getting Started With Serverless WebAssembly <a href=\"https://www.smashingmagazine.com/2019/08/beyond-browser-serverless-webassembly/\">smashingmagazine.com/2019/08/beyond…</a> an example using Rust and Cloudflare workers</p></blockquote><div class=\"footer\"><a id=\"reply-action-home-1166747417133420545\" href=\"#reply-1166747417133420545\" class=\"action reply-action\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 65 72\" class=\"action-icon\">\n    <path d=\"M41 31h-9V19c0-1.14-.647-2.183-1.668-2.688-1.022-.507-2.243-.39-3.15.302l-21 16C5.438 33.18 5 34.064 5 35s.437 1.82 1.182 2.387l21 16c.533.405 1.174.613 1.82.613.453 0 .908-.103 1.33-.312C31.354 53.183 32 52.14 32 51V39h9c5.514 0 10 4.486 10 10 0 2.21 1.79 4 4 4s4-1.79 4-4c0-9.925-8.075-18-18-18z\"></path>\n</svg></a><a id=\"retweet-action-home-1166747417133420545\" href=\"#retweet-1166747417133420545\" class=\"action retweet-action\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 75 72\" class=\"action-icon\">\n    <path d=\"M70.676 36.644C70.166 35.636 69.13 35 68 35h-7V19c0-2.21-1.79-4-4-4H34c-2.21 0-4 1.79-4 4s1.79 4 4 4h18c.552 0 .998.446 1 .998V35h-7c-1.13 0-2.165.636-2.676 1.644-.51 1.01-.412 2.22.257 3.13l11 15C55.148 55.545 56.046 56 57 56s1.855-.455 2.42-1.226l11-15c.668-.912.767-2.122.256-3.13zM40 48H22c-.54 0-.97-.427-.992-.96L21 36h7c1.13 0 2.166-.636 2.677-1.644.51-1.01.412-2.22-.257-3.13l-11-15C18.854 15.455 17.956 15 17 15s-1.854.455-2.42 1.226l-11 15c-.667.912-.767 2.122-.255 3.13C3.835 35.365 4.87 36 6 36h7l.012 16.003c.002 2.208 1.792 3.997 4 3.997h22.99c2.208 0 4-1.79 4-4s-1.792-4-4-4z\"></path>\n</svg><span id=\"retweet-count-home-1166747417133420545\" class=\"count\">6</span></a><a id=\"like-action-home-1166747417133420545\" href=\"#like-1166747417133420545\" class=\"action like-action\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 54 72\" class=\"action-icon\">\n    <path d=\"M38.723,12c-7.187,0-11.16,7.306-11.723,8.131C26.437,19.306,22.504,12,15.277,12C8.791,12,3.533,18.163,3.533,24.647 C3.533,39.964,21.891,55.907,27,56c5.109-0.093,23.467-16.036,23.467-31.353C50.467,18.163,45.209,12,38.723,12z\"></path>\n</svg><span id=\"like-count-1166747417133420545\" class=\"count\">14</span></a></div></div>",
+    "contributors": null,
+    "coordinates": null,
+    "created_at": "Wed Aug 28 23:15:00 +0000 2019",
+    "display_text_range": [
+        0,
+        140
+    ],
+    "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "urls": [],
+        "user_mentions": [
+            {
+                "id": 232076816,
+                "id_str": "232076816",
+                "indices": [
+                    3,
+                    15
+                ],
+                "name": "rita kozlov",
+                "screen_name": "ritakozlov_"
+            },
+            {
+                "id": 32499999,
+                "id_str": "32499999",
+                "indices": [
+                    77,
+                    88
+                ],
+                "name": "Cloudflare",
+                "screen_name": "Cloudflare"
+            }
+        ]
+    },
+    "favorite_count": 0,
+    "favorited": false,
+    "full_text": "RT @ritakozlov_: DNA sequencing data analysis is probably one of the coolest @Cloudflare Workers use cases I’ve seen!   \nSo many possibilit…",
+    "geo": null,
+    "id": 1166851708041007000,
+    "id_str": "1166851708041007105",
+    "in_reply_to_screen_name": null,
+    "in_reply_to_status_id": null,
+    "in_reply_to_status_id_str": null,
+    "in_reply_to_user_id": null,
+    "in_reply_to_user_id_str": null,
+    "is_quote_status": true,
+    "lang": "en",
+    "place": null,
+    "quoted_status_id": 1166743967716843500,
+    "quoted_status_id_str": "1166743967716843520",
+    "quoted_status_permalink": {
+        "display": "twitter.com/wasmweekly/sta…",
+        "expanded": "https://twitter.com/wasmweekly/status/1166743967716843520",
+        "url": "https://t.co/JDHW4kLFly"
+    },
+    "retweet_count": 6,
+    "retweeted": false,
+    "retweeted_status": {
+        "contributors": null,
+        "coordinates": null,
+        "created_at": "Wed Aug 28 16:20:36 +0000 2019",
+        "display_text_range": [
+            0,
+            155
+        ],
+        "entities": {
+            "hashtags": [
+                {
+                    "indices": [
+                        131,
+                        142
+                    ],
+                    "text": "serverless"
+                }
+            ],
+            "symbols": [],
+            "urls": [
+                {
+                    "display_url": "twitter.com/wasmweekly/sta…",
+                    "expanded_url": "https://twitter.com/wasmweekly/status/1166743967716843520",
+                    "indices": [
+                        156,
+                        179
+                    ],
+                    "url": "https://t.co/JDHW4kLFly"
+                }
+            ],
+            "user_mentions": [
+                {
+                    "id": 32499999,
+                    "id_str": "32499999",
+                    "indices": [
+                        60,
+                        71
+                    ],
+                    "name": "Cloudflare",
+                    "screen_name": "Cloudflare"
+                }
+            ]
+        },
+        "favorite_count": 14,
+        "favorited": false,
+        "full_text": "DNA sequencing data analysis is probably one of the coolest @Cloudflare Workers use cases I’ve seen!   \nSo many possibilities with #serverless WebAssembly. https://t.co/JDHW4kLFly",
+        "geo": null,
+        "id": 1166747417133420500,
+        "id_str": "1166747417133420545",
+        "in_reply_to_screen_name": null,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "is_quote_status": true,
+        "lang": "en",
+        "place": null,
+        "possibly_sensitive": false,
+        "possibly_sensitive_appealable": false,
+        "quoted_status": {
+            "contributors": null,
+            "coordinates": null,
+            "created_at": "Wed Aug 28 16:06:53 +0000 2019",
+            "display_text_range": [
+                0,
+                132
+            ],
+            "entities": {
+                "hashtags": [],
+                "symbols": [],
+                "urls": [
+                    {
+                        "display_url": "smashingmagazine.com/2019/08/beyond…",
+                        "expanded_url": "https://www.smashingmagazine.com/2019/08/beyond-browser-serverless-webassembly/",
+                        "indices": [
+                            64,
+                            87
+                        ],
+                        "url": "https://t.co/lOBnXMm2R4"
+                    }
+                ],
+                "user_mentions": []
+            },
+            "favorite_count": 48,
+            "favorited": false,
+            "full_text": "Beyond The Browser: Getting Started With Serverless WebAssembly https://t.co/lOBnXMm2R4 an example using Rust and Cloudflare workers",
+            "geo": null,
+            "id": 1166743967716843500,
+            "id_str": "1166743967716843520",
+            "in_reply_to_screen_name": null,
+            "in_reply_to_status_id": null,
+            "in_reply_to_status_id_str": null,
+            "in_reply_to_user_id": null,
+            "in_reply_to_user_id_str": null,
+            "is_quote_status": false,
+            "lang": "en",
+            "place": null,
+            "possibly_sensitive": false,
+            "possibly_sensitive_appealable": false,
+            "retweet_count": 9,
+            "retweeted": false,
+            "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+            "truncated": false,
+            "user": {
+                "contributors_enabled": false,
+                "created_at": "Tue Oct 10 05:35:25 +0000 2017",
+                "default_profile": false,
+                "default_profile_image": false,
+                "description": "A weekly publication about all things #WebAssembly - a twitter account from @ColinEberhardt",
+                "entities": {
+                    "description": {
+                        "urls": []
+                    },
+                    "url": {
+                        "urls": [
+                            {
+                                "display_url": "wasmweekly.news",
+                                "expanded_url": "http://wasmweekly.news/",
+                                "indices": [
+                                    0,
+                                    23
+                                ],
+                                "url": "https://t.co/lojl9lka7q"
+                            }
+                        ]
+                    }
+                },
+                "favourites_count": 754,
+                "follow_request_sent": false,
+                "followers_count": 7173,
+                "following": false,
+                "friends_count": 40,
+                "geo_enabled": false,
+                "has_extended_profile": false,
+                "id": 917624590314147800,
+                "id_str": "917624590314147840",
+                "is_translation_enabled": false,
+                "is_translator": false,
+                "lang": null,
+                "listed_count": 111,
+                "location": "",
+                "name": "WebAssemblyWeekly",
+                "notifications": false,
+                "profile_background_color": "000000",
+                "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+                "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png",
+                "profile_background_tile": false,
+                "profile_image_url": "http://pbs.twimg.com/profile_images/917625215043194880/DB-47z5l_normal.jpg",
+                "profile_image_url_https": "https://pbs.twimg.com/profile_images/917625215043194880/DB-47z5l_normal.jpg",
+                "profile_link_color": "6556EC",
+                "profile_sidebar_border_color": "000000",
+                "profile_sidebar_fill_color": "000000",
+                "profile_text_color": "000000",
+                "profile_use_background_image": false,
+                "protected": false,
+                "screen_name": "WasmWeekly",
+                "statuses_count": 1736,
+                "time_zone": null,
+                "translator_type": "none",
+                "url": "https://t.co/lojl9lka7q",
+                "utc_offset": null,
+                "verified": false
+            }
+        },
+        "quoted_status_id": 1166743967716843500,
+        "quoted_status_id_str": "1166743967716843520",
+        "quoted_status_permalink": {
+            "display": "twitter.com/wasmweekly/sta…",
+            "expanded": "https://twitter.com/wasmweekly/status/1166743967716843520",
+            "url": "https://t.co/JDHW4kLFly"
+        },
+        "retweet_count": 6,
+        "retweeted": false,
+        "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+        "truncated": false,
+        "user": {
+            "contributors_enabled": false,
+            "created_at": "Thu Dec 30 05:38:13 +0000 2010",
+            "default_profile": false,
+            "default_profile_image": false,
+            "description": "big earring energy. pm of @cloudflare workers 🦕✨",
+            "entities": {
+                "description": {
+                    "urls": []
+                },
+                "url": {
+                    "urls": [
+                        {
+                            "display_url": "workers.cloudflare.com",
+                            "expanded_url": "https://workers.cloudflare.com",
+                            "indices": [
+                                0,
+                                23
+                            ],
+                            "url": "https://t.co/1PjPTaIOIf"
+                        }
+                    ]
+                }
+            },
+            "favourites_count": 3159,
+            "follow_request_sent": false,
+            "followers_count": 541,
+            "following": false,
+            "friends_count": 447,
+            "geo_enabled": true,
+            "has_extended_profile": false,
+            "id": 232076816,
+            "id_str": "232076816",
+            "is_translation_enabled": false,
+            "is_translator": false,
+            "lang": null,
+            "listed_count": 4,
+            "location": "san francisco, ca",
+            "name": "rita kozlov",
+            "notifications": false,
+            "profile_background_color": "FFFFFF",
+            "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+            "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png",
+            "profile_background_tile": true,
+            "profile_banner_url": "https://pbs.twimg.com/profile_banners/232076816/1479618340",
+            "profile_image_url": "http://pbs.twimg.com/profile_images/578955396951470080/hTqw35Yz_normal.jpeg",
+            "profile_image_url_https": "https://pbs.twimg.com/profile_images/578955396951470080/hTqw35Yz_normal.jpeg",
+            "profile_link_color": "F58EA8",
+            "profile_sidebar_border_color": "DBA504",
+            "profile_sidebar_fill_color": "474646",
+            "profile_text_color": "212021",
+            "profile_use_background_image": true,
+            "protected": false,
+            "screen_name": "ritakozlov_",
+            "statuses_count": 1954,
+            "time_zone": null,
+            "translator_type": "none",
+            "url": "https://t.co/1PjPTaIOIf",
+            "utc_offset": null,
+            "verified": false
+        }
+    },
+    "source": "<a href=\"https://buffer.com\" rel=\"nofollow\">Buffer</a>",
+    "truncated": false,
+    "user": {
+        "contributors_enabled": false,
+        "created_at": "Fri Apr 17 17:58:28 +0000 2009",
+        "default_profile": false,
+        "default_profile_image": false,
+        "description": "The Internet Security, Performance, and Reliability company. For help with your account try @CloudflareHelp, https://t.co/Q4N8QP5a5U, or https://t.co/WyPljy01WS",
+        "entities": {
+            "description": {
+                "urls": [
+                    {
+                        "display_url": "support.cloudflare.com",
+                        "expanded_url": "http://support.cloudflare.com",
+                        "indices": [
+                            109,
+                            132
+                        ],
+                        "url": "https://t.co/Q4N8QP5a5U"
+                    },
+                    {
+                        "display_url": "community.cloudflare.com",
+                        "expanded_url": "http://community.cloudflare.com",
+                        "indices": [
+                            137,
+                            160
+                        ],
+                        "url": "https://t.co/WyPljy01WS"
+                    }
+                ]
+            },
+            "url": {
+                "urls": [
+                    {
+                        "display_url": "cloudflare.com",
+                        "expanded_url": "http://www.cloudflare.com",
+                        "indices": [
+                            0,
+                            23
+                        ],
+                        "url": "https://t.co/1zVlza3shY"
+                    }
+                ]
+            }
+        },
+        "favourites_count": 1951,
+        "follow_request_sent": false,
+        "followers_count": 90243,
+        "following": true,
+        "friends_count": 6300,
+        "geo_enabled": true,
+        "has_extended_profile": false,
+        "id": 32499999,
+        "id_str": "32499999",
+        "is_translation_enabled": false,
+        "is_translator": false,
+        "lang": null,
+        "listed_count": 1815,
+        "location": "Offices in SF, London, Singapore, Austin, Champaign, and more",
+        "name": "Cloudflare",
+        "notifications": false,
+        "profile_background_color": "FFFFFF",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme16/bg.gif",
+        "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme16/bg.gif",
+        "profile_background_tile": false,
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/32499999/1565196245",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/1139624941362372608/_VIX9eN1_normal.png",
+        "profile_image_url_https": "https://pbs.twimg.com/profile_images/1139624941362372608/_VIX9eN1_normal.png",
+        "profile_link_color": "007FD9",
+        "profile_sidebar_border_color": "FFFFFF",
+        "profile_sidebar_fill_color": "CFE5EE",
+        "profile_text_color": "333333",
+        "profile_use_background_image": false,
+        "protected": false,
+        "screen_name": "Cloudflare",
+        "statuses_count": 39781,
+        "time_zone": null,
+        "translator_type": "none",
+        "url": "https://t.co/1zVlza3shY",
+        "utc_offset": null,
+        "verified": true
+    }
+}
