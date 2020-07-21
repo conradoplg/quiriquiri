@@ -199,13 +199,14 @@ function onTweetArrived(event, user, tl, tweets) {
                 mentions = ''
                 showTweetDialog(mentions, user.data.screen_name, tweet.id_str)
             })
-            $('#retweet-action-' + tl + '-' + tweet.id_str).click(function(event) {
+            $('#retweet-action-' + tl + '-' + id).click(function(event) {
                 event.preventDefault()
-                quiri.users[user.data.screen_name].retweet(tweet.id_str)
+                quiri.users[user.data.screen_name].retweet(id)
             })
-            $('#like-action-' + tl + '-' + tweet.id_str).click(function(event) {
+            $('#like-action-' + tl + '-' + id).click(function(event) {
                 event.preventDefault()
-                quiri.users[user.data.screen_name].like(tweet.id_str)
+                log.debug('onTweetArrived: ', {tl: tl, id_str: id})
+                quiri.users[user.data.screen_name].like(id)
             })
             let mediaDiv = tweetDiv.find('.media-set')
             if (mediaDiv) {
@@ -396,15 +397,7 @@ function addUser() {
         if (error) {
             console.log(JSON.stringify(error))
         } else {
-            addUserWin = new BrowserWindow({
-                parent: win,
-                webPreferences: {
-                    nodeIntegration: false,
-                    nodeIntegrationInWorker: false,
-                }
-            })
-            addUserWin.loadURL(`https://api.twitter.com/oauth/authorize?oauth_token=${token}`)
-            addUserWin.show()
+            let modal = window.open(`https://api.twitter.com/oauth/authorize?oauth_token=${token}`, 'addUser')
         }
     })
 }

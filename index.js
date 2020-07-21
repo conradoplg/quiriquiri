@@ -22,6 +22,7 @@ process.on('unhandledRejection', r => console.log(r));
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
+let addUserWin
 
 function createWindow() {
     let mainWindowState = windowStateKeeper({
@@ -39,6 +40,7 @@ function createWindow() {
         webPreferences: {
             // TODO: fix
             nodeIntegration: true,
+            nativeWindowOpen: true,
         }
     })
 
@@ -53,6 +55,18 @@ function createWindow() {
         // when you should delete the corresponding element.
         quiri.close()
         win = null
+    })
+
+    win.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
+        if (frameName === 'addUser') {
+            // open window as modal
+            event.preventDefault()
+            Object.assign(options, {
+                modal: true,
+                parent: win,
+            })
+            event.newGuest = addUserWin = new BrowserWindow(options)
+        }
     })
 
     protocol.registerFileProtocol('quiriquiri', (request, callback) => {
