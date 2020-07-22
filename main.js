@@ -70,7 +70,7 @@ function getOnTweetContextMenu(timelineDiv, user, tl, tweet) {
                         $(elem).addClass('read')
                     }
                 })
-                $('body').scrollTop(0)
+                setInterval(() => { $('body').scrollTop(0) }, 0)
                 updateUnreadCount(user, tl)
             }
         }))
