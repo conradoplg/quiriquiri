@@ -43,7 +43,6 @@ function showTweetDialog(initialText, author, replyTo) {
     $('#modal').show()
     $('#tweet-dialog-post').prop('disabled', false)
     $('#tweet-dialog-text').prop('disabled', false)
-    $('#tweet-dialog-text').val(initialText)
     $('#tweet-dialog-text').focus()
     $('#tweet-dialog-author').val(author)
     $('#tweet-dialog-reply-to').val(replyTo)
