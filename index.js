@@ -38,8 +38,10 @@ function createWindow() {
         title: 'QuiriQuiri',
         icon: `${__dirname}/resources/icons/64x64/quiriquiri.png`,
         webPreferences: {
-            // TODO: fix
+            // TODO: fix?
             nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
             nativeWindowOpen: true,
         }
     })

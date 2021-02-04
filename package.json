@@ -17,27 +17,27 @@
   "author": "Conrado P. L. Gouvea",
   "license": "MIT",
   "dependencies": {
-    "electron-debug": "^3.1.0",
+    "electron-debug": "^3.2.0",
     "electron-window-state": "^5.0.3",
     "featherlight": "^1.7.14",
     "is-in-viewport": "^3.0.4",
     "jquery": "^3.5.1",
     "jquery-ui-dist": "^1.12.1",
     "mashape-oauth": "^0.1.71",
-    "pino": "^6.4.0",
-    "sinon": "^9.0.2",
-    "twemoji": "^13.0.0",
+    "pino": "^6.11.0",
+    "sinon": "^9.2.4",
+    "twemoji": "^13.0.1",
     "twit": "^2.2.11",
     "twitter-text": "^3.1.0",
     "winston": "^3.3.3",
     "zpad": "^0.5.0"
   },
   "devDependencies": {
-    "electron": "^9.1.0",
-    "electron-builder": "^22.7.0",
-    "jsdom": "16.3.0",
+    "electron": "^11.2.2",
+    "electron-builder": "^22.9.1",
+    "jsdom": "16.4.0",
     "jsdom-global": "3.0.2",
-    "mocha": "^8.0.1"
+    "mocha": "^8.2.1"
   },
   "build": {
     "appId": "net.cryptoland.quiriquiri"
