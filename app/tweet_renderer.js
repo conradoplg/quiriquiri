@@ -297,6 +297,10 @@ function createTextP($, tweet, isEvent = false) {
                 break
         }
         if (typ == 'media' && !isEvent) {
+            let sensitive_cls = ''
+            if (t.possibly_sensitive) {
+                sensitive_cls = ' sensitive'
+            }
             if (!mediaDiv) {
                 mediaDiv = $("<div></div>", {
                     class: 'media-set',
@@ -307,7 +311,7 @@ function createTextP($, tweet, isEvent = false) {
             }
             if (ent.video_info) {
                 let videoOptions = {
-                    class: 'media media-' + mediaCount,
+                    class: 'media media-' + mediaCount + sensitive_cls,
                 }
                 if (ent.type == 'animated_gif') {
                     videoOptions.loop = ''
@@ -328,7 +332,7 @@ function createTextP($, tweet, isEvent = false) {
                     href: ent.media_url_https + ':large',
                     'data-featherlight': 'image',
                 }).append($("<img/>", {
-                    class: 'media media-' + mediaCount,
+                    class: 'media media-' + mediaCount + sensitive_cls,
                     src: ent.media_url_https + ':small'
                 })))
             }

@@ -128,6 +128,10 @@ p {
     border: 1px solid #1DA1F2;
 }
 
+.tweet .sensitive {
+    opacity: 0;
+}
+
 .tweet .footer {
     padding-top: 6px;
 }
