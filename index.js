@@ -5,7 +5,6 @@ const windowStateKeeper = require('electron-window-state');
 const {
     app,
     BrowserWindow,
-    ipcMain,
     protocol,
 } = require('electron')
 
@@ -35,7 +34,7 @@ function createWindow() {
         'y': mainWindowState.y,
         'width': mainWindowState.width,
         'height': mainWindowState.height,
-        title: 'QuiriQuiri',
+        title: 'QuiriQuiri ' + app.getVersion(),
         icon: `${__dirname}/resources/icons/64x64/quiriquiri.png`,
         webPreferences: {
             // TODO: fix?
@@ -57,6 +56,11 @@ function createWindow() {
         // when you should delete the corresponding element.
         quiri.close()
         win = null
+    })
+
+    // Prevent HTML title from overriding window title
+    win.on('page-title-updated', function(e) {
+        e.preventDefault()
     })
 
     win.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
