@@ -16,6 +16,8 @@ debug({
     showDevTools: false,
 });
 
+require('@electron/remote/main').initialize()
+
 process.on('unhandledRejection', r => console.log(r));
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -44,6 +46,8 @@ function createWindow() {
             nativeWindowOpen: true,
         }
     })
+
+    require("@electron/remote/main").enable(win.webContents)
 
     mainWindowState.manage(win);
 

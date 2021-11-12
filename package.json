@@ -1,6 +1,6 @@
 {
   "name": "quiriquiri",
-  "version": "2.0.14",
+  "version": "2.1.0",
   "description": "QuiriQuiri: a Twitter client",
   "repository": {
     "type": "git",
@@ -17,27 +17,28 @@
   "author": "Conrado P. L. Gouvea",
   "license": "MIT",
   "dependencies": {
+    "@electron/remote": "^2.0.1",
     "electron-debug": "^3.2.0",
     "electron-window-state": "^5.0.3",
     "featherlight": "^1.7.14",
     "is-in-viewport": "^3.0.4",
-    "jquery": "^3.5.1",
+    "jquery": "^3.6.0",
     "jquery-ui-dist": "^1.12.1",
     "mashape-oauth": "^0.1.71",
-    "pino": "^6.11.0",
-    "sinon": "^9.2.4",
-    "twemoji": "^13.0.1",
+    "pino": "^7.1.0",
+    "sinon": "^12.0.1",
+    "twemoji": "^13.1.0",
     "twit": "^2.2.11",
     "twitter-text": "^3.1.0",
     "winston": "^3.3.3",
     "zpad": "^0.5.0"
   },
   "devDependencies": {
-    "electron": "^11.2.2",
-    "electron-builder": "^22.9.1",
-    "jsdom": "16.4.0",
+    "electron": "^15.3.1",
+    "electron-builder": "^22.13.1",
+    "jsdom": "18.0.1",
     "jsdom-global": "3.0.2",
-    "mocha": "^8.2.1"
+    "mocha": "^9.1.3"
   },
   "build": {
     "appId": "net.cryptoland.quiriquiri"

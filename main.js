@@ -1,9 +1,9 @@
 // In renderer process (web page).
 const {
     ipcRenderer,
-    remote,
     clipboard
 } = nodeRequire('electron')
+const remote = nodeRequire('@electron/remote')
 const {
     Menu,
     MenuItem,
