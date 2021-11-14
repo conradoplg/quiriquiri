@@ -14,6 +14,7 @@ var fs = nodeRequire('fs');
 var secret = nodeRequire('./secret')
 var QuiriQuiriApp = nodeRequire('./app/app').QuiriQuiriApp
 var TwitterAuthorization = nodeRequire('./app/authorization').TwitterAuthorization
+var DropboxAuthorization = nodeRequire('./app/dropbox-authorization').DropboxAuthorization
 var quiri = new QuiriQuiriApp()
 
 var shell = nodeRequire('electron').shell
@@ -100,7 +101,7 @@ function defaultErrorHandler(event, err) {
 }
 
 function setupPostDialog() {
-    $('#tweet-dialog-post').on('click', function(event) {
+    $('#tweet-dialog-post').on('click', function (event) {
         event.preventDefault()
         $('#tweet-dialog-post').prop('disabled', true)
         $('#tweet-dialog-text').prop('disabled', true)
@@ -118,17 +119,17 @@ function setupPostDialog() {
     }
     tweetDialogText.keypress(updateTweetLength)
     tweetDialogText.keyup(updateTweetLength)
-    tweetDialogText.on( "keydown", function( event ) {
-            // don't navigate away from the field on tab when selecting an item
-            if (event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
-                event.preventDefault();
-            }
-        }).autocomplete({
+    tweetDialogText.on("keydown", function (event) {
+        // don't navigate away from the field on tab when selecting an item
+        if (event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+            event.preventDefault();
+        }
+    }).autocomplete({
         minLength: 0,
         autoFocus: true,
         delay: 0,
-        position: { my : "right top", at: "right bottom" },
-        source: function(request, response) {
+        position: { my: "right top", at: "right bottom" },
+        source: function (request, response) {
             var txt = request.term.substring(0, $("#tweet-dialog-text")[0].selectionStart)
             var matches = /@[\S]+$/.exec(txt)
             if (matches) {
@@ -147,11 +148,11 @@ function setupPostDialog() {
                 response([])
             }
         },
-        focus: function() {
+        focus: function () {
             // prevent value inserted on focus
             return false
         },
-        select: function(event, ui) {
+        select: function (event, ui) {
             var before = this.value.substring(0, $("#tweet-dialog-text")[0].selectionStart)
             var after = this.value.substring($("#tweet-dialog-text")[0].selectionStart)
             var newBefore = before.replace(/@[\S]+$/, '@' + ui.item.value)
@@ -160,9 +161,9 @@ function setupPostDialog() {
             $(this).autocomplete('close')
             return false;
         }
-    }).autocomplete('instance')._renderItem = function(ul, item) {
-        return $('<li>', {class: 'user-item'}).append(
-            $('<img>', {src: usernameMap[item.value].img}),
+    }).autocomplete('instance')._renderItem = function (ul, item) {
+        return $('<li>', { class: 'user-item' }).append(
+            $('<img>', { src: usernameMap[item.value].img }),
             $("<span></span>", {
                 class: 'name'
             }).text(item.label),
@@ -190,7 +191,7 @@ function onTweetArrived(event, user, tl, tweets) {
                 arrivedTweetsMap[user.data.screen_name].add(id)
             }
             tweetDiv.contextmenu(getOnTweetContextMenu(timelineDiv, user, tl, tweet))
-            $('#reply-action-' + tl + '-' + tweet.id_str).click(function(event) {
+            $('#reply-action-' + tl + '-' + tweet.id_str).click(function (event) {
                 event.preventDefault()
                 var mentions = tweetRenderer.getMentions(user.data, tweet).map((username) => '@' + username).join(' ') + ' '
                 //no need to include mentions anymore.
@@ -198,21 +199,21 @@ function onTweetArrived(event, user, tl, tweets) {
                 mentions = ''
                 showTweetDialog(mentions, user.data.screen_name, tweet.id_str)
             })
-            $('#retweet-action-' + tl + '-' + id).click(function(event) {
+            $('#retweet-action-' + tl + '-' + id).click(function (event) {
                 event.preventDefault()
                 quiri.users[user.data.screen_name].retweet(id)
             })
-            $('#like-action-' + tl + '-' + id).click(function(event) {
+            $('#like-action-' + tl + '-' + id).click(function (event) {
                 event.preventDefault()
-                log.debug('onTweetArrived: ', {tl: tl, id_str: id})
+                log.debug('onTweetArrived: ', { tl: tl, id_str: id })
                 quiri.users[user.data.screen_name].like(id)
             })
             let mediaDiv = tweetDiv.find('.media-set')
             if (mediaDiv) {
                 if (mediaDiv.children().length == 1) {
-                    mediaDiv.first().featherlight({openSpeed: 0})
+                    mediaDiv.first().featherlight({ openSpeed: 0 })
                 } else {
-                    mediaDiv.featherlightGallery({openSpeed: 0, galleryFadeIn: 0, galleryFadeOut: 0})
+                    mediaDiv.featherlightGallery({ openSpeed: 0, galleryFadeIn: 0, galleryFadeOut: 0 })
                 }
             }
             let sender = (tweet.user || tweet.sender)
@@ -248,24 +249,28 @@ function onUserEvent(event, user, eventMsg) {
 var showRead = false
 
 function onDocumentReady() {
-    jQuery.fn.reverse = function() {
+    jQuery.fn.reverse = function () {
         return this.pushStack(this.get().reverse(), arguments);
     }
-    $('#add_user').click(function(event) {
+    $('#add_user').click(function (event) {
         event.preventDefault()
         addUser()
+    })
+    $('#link_dropbox').click(function (event) {
+        event.preventDefault()
+        linkDropbox()
     })
     $('head').append("<style id='showReadStyle' type='text/css'></style>");
     let showStyle = '.tweet.read { display: block; opacity: 0.6; }'
     let hideStyle = '.tweet.read { display: none; opacity: 1; }'
     $('#showReadStyle').text(hideStyle)
-    $('#show_read').click(function(event) {
+    $('#show_read').click(function (event) {
         event.preventDefault()
         showRead = !showRead
         $('#showReadStyle').text(showRead ? showStyle : hideStyle)
     })
     //open links externally by default
-    $(document).on('click', 'a[href^="http"]', function(event) {
+    $(document).on('click', 'a[href^="http"]', function (event) {
         if ($(event.target).parent().attr('data-featherlight')) {
             return
         }
@@ -273,7 +278,7 @@ function onDocumentReady() {
         event.stopPropagation();
         shell.openExternal(this.href)
     })
-    $(document).on('click', '*[data-href^="http"]', function(event) {
+    $(document).on('click', '*[data-href^="http"]', function (event) {
         if ($(event.target).parent().attr('data-featherlight')) {
             return
         }
@@ -282,25 +287,25 @@ function onDocumentReady() {
         shell.openExternal(this.getAttribute('data-href'))
     })
     $(document).on('contextmenu', 'a[href^="http"]', onLinkContextMenu)
-    $(document).on('contextmenu', function(event) {
+    $(document).on('contextmenu', function (event) {
         event.preventDefault();
         let menu = event.originalEvent._menu = event.originalEvent._menu || new Menu()
         menu.popup(remote.getCurrentWindow())
     })
-    $(window).on('click', function(event) {
+    $(window).on('click', function (event) {
         event.preventDefault()
         if (event.target == document.getElementById('modal')) {
             $('#modal').hide()
         }
     })
     var didScroll = false
-    $(window).scroll(function() {
+    $(window).scroll(function () {
         didScroll = true
     })
     setInterval(function () {
         if (didScroll) {
             didScroll = false
-            $('video.autoplay').each(function(){
+            $('video.autoplay').each(function () {
                 if ($(this).is(":in-viewport")) {
                     $(this)[0].play();
                 } else {
@@ -340,20 +345,20 @@ function mainReady() {
 quiri.on('user-added', (user) => {
     log.debug('quiri.on user-added called with', user)
     onUserAdded(null, user)
-    user.on('tweets-loaded', function(user, tl, tweets) {
+    user.on('tweets-loaded', function (user, tl, tweets) {
         onTweetArrived(null, user, tl, tweets)
     })
-    user.on('load-error', function(err) {
+    user.on('load-error', function (err) {
         console.log(err)
     })
-    user.on('friends-loaded', function(user, friends) {
+    user.on('friends-loaded', function (user, friends) {
         for (let f of friends) {
             usernameMap[f.screen_name] = {
                 value: f.screen_name, label: f.name, img: f.profile_image_url_https
             }
         }
     })
-    user.on('load-friend-error', function(err) {
+    user.on('load-friend-error', function (err) {
         console.log(err)
     })
     user.on('tweet-posted', (user, tweet) => {
@@ -384,7 +389,7 @@ quiri.on('user-added', (user) => {
 
 $(document).ready(onDocumentReady)
 
-window.onerror = function(error, url, line) {
+window.onerror = function (error, url, line) {
     log.error(error, JSON.stringify([url, line]))
 }
 
@@ -396,18 +401,43 @@ function addUser() {
         if (error) {
             console.log(JSON.stringify(error))
         } else {
-            let modal = window.open(`https://api.twitter.com/oauth/authorize?oauth_token=${token}`, 'addUser')
+            addUserWin = window.open(`https://api.twitter.com/oauth/authorize?oauth_token=${token}`, 'addUser')
         }
     })
 }
 
 ipcRenderer.on('authorized', (event, query) => {
-    twitterAuthorization.getAccessToken(query, function(error, token, secret) {
+    twitterAuthorization.getAccessToken(query, function (error, token, secret) {
         if (error) {
             log.error(JSON.stringify(error))
         } else {
             log.debug(`token ${token} secret ${secret}`)
             quiri.addUser(token, secret)
+        }
+    })
+})
+
+
+var dropboxAuthorization = new DropboxAuthorization('quiriquiri://dropbox-authorize/', secret['dropbox_client_id'])
+
+function linkDropbox() {
+    dropboxAuthorization.getAuthenticationUrl((error, authUrl) => {
+        if (error) {
+            console.log(JSON.stringify(error))
+        } else {
+            console.log(`Opening ${authUrl}`)
+            addUserWin = window.open(authUrl, 'linkDropbox')
+        }
+    })
+}
+
+ipcRenderer.on('dropbox-authorized', (event, code) => {
+    dropboxAuthorization.authenticate(code, function (error, refresh_token) {
+        if (error) {
+            log.error(JSON.stringify(error))
+        } else {
+            log.debug(`refresh_token ${refresh_token}`)
+            quiri.linkDropbox(refresh_token)
         }
     })
 })

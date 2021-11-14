@@ -21,37 +21,40 @@
     <script src="node_modules/is-in-viewport/lib/isInViewport.min.js"></script>
     <script src="main.js"></script>
 </head>
+
 <body>
 
-<div id="sidebar">
-    <div>
-        <p><a id="add_user" href="#add_user">Add User...</a></p>
-        <p><a id="show_read" href="#show_read">Toggle Show Read</a></p>
-    </div>
-    <ul id="user_list"></ul>
-</div>
-
-
-<div id="timeline">
-
-</div>
-
-<div id="modal" class="modal">
-    <div id="tweet-dialog" class="modal-content">
-        <textarea id="tweet-dialog-text"></textarea>
-        <input id="tweet-dialog-author" type="hidden" value="">
-        <input id="tweet-dialog-reply-to" type="hidden" value="">
-        <div id="tweet-dialog-actions">
-            <div id="tweet-dialog-remaining-length"></div>
-            <button id="tweet-dialog-post">Tweet</button>
+    <div id="sidebar">
+        <div>
+            <p><a id="add_user" href="#add_user">Add User...</a></p>
+            <p><a id="show_read" href="#show_read">Toggle Show Read</a></p>
+            <p><a id="link_dropbox" href="#link_dropbox">Link Dropbox...</a></p>
         </div>
-        <div class="clear-both"></div>
+        <ul id="user_list"></ul>
     </div>
-</div>
 
-<div id="error">
-    <p id="error-text"></p>
-</div>
+
+    <div id="timeline">
+
+    </div>
+
+    <div id="modal" class="modal">
+        <div id="tweet-dialog" class="modal-content">
+            <textarea id="tweet-dialog-text"></textarea>
+            <input id="tweet-dialog-author" type="hidden" value="">
+            <input id="tweet-dialog-reply-to" type="hidden" value="">
+            <div id="tweet-dialog-actions">
+                <div id="tweet-dialog-remaining-length"></div>
+                <button id="tweet-dialog-post">Tweet</button>
+            </div>
+            <div class="clear-both"></div>
+        </div>
+    </div>
+
+    <div id="error">
+        <p id="error-text"></p>
+    </div>
 
 </body>
+
 </html>

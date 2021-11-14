@@ -43,7 +43,7 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false,
             enableRemoteModule: true,
-            nativeWindowOpen: true,
+            nativeWindowOpen: false,
         }
     })
 
@@ -63,29 +63,32 @@ function createWindow() {
     })
 
     // Prevent HTML title from overriding window title
-    win.on('page-title-updated', function(e) {
+    win.on('page-title-updated', function (e) {
         e.preventDefault()
     })
 
-    win.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
-        if (frameName === 'addUser') {
-            // open window as modal
-            event.preventDefault()
-            Object.assign(options, {
-                modal: true,
-                parent: win,
-            })
-            event.newGuest = addUserWin = new BrowserWindow(options)
-        }
-    })
+    // win.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
+    //     if (frameName === 'addUser' || frameName === 'linkDropbox') {
+    //         // open window as modal
+    //         event.preventDefault()
+    //         Object.assign(options, {
+    //             modal: true,
+    //             parent: win,
+    //         })
+    //         event.newGuest = addUserWin = new BrowserWindow(options)
+    //     }
+    // })
 
-    protocol.registerFileProtocol('quiriquiri', (request, callback) => {
+    protocol.registerStringProtocol('quiriquiri', (request, callback) => {
         const url = require('url').parse(request.url, true)
         log.debug(JSON.stringify(url.query))
         log.debug(url.hostname)
-        callback()
+        callback({ mimeType: 'text/html', data: '' })
         if (url.hostname == 'authorize') {
             win.webContents.send('authorized', url.query)
+        }
+        if (url.hostname == 'dropbox-authorize') {
+            win.webContents.send('dropbox-authorized', url.query)
         }
         addUserWin.close()
     })

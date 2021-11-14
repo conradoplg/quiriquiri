@@ -4,12 +4,14 @@ var User = require('./user').User
 var credentials = require('../secret')
 const EventEmitter = require('events')
 const log = require('./log')
+var DropboxAuthorization = require('./dropbox-authorization').DropboxAuthorization
 
 
 class QuiriQuiriApp extends EventEmitter {
     constructor() {
         super()
         this.users = {}
+        this.dropboxRefreshToken = null
     }
 
     loadConfig(config) {
@@ -22,12 +24,14 @@ class QuiriQuiriApp extends EventEmitter {
                 log.error('Error loading user', [username, err.stack])
             }
         }
+        this.dropboxRefreshToken = config.dropbox_refresh_token
     }
 
     saveConfig(config) {
         for (let username in this.users) {
             this.users[username].saveConfig(config)
         }
+        config.dropbox_refresh_token = this.dropboxRefreshToken
     }
 
     addUser(token, secret, config) {
@@ -53,6 +57,20 @@ class QuiriQuiriApp extends EventEmitter {
             log.debug('user.on config-changed called for', user.data.screen_name)
             this.emit('config-changed')
         })
+    }
+
+    linkDropbox(refreshToken) {
+        dropboxAuthorization = new DropboxAuthorization('quiriquiri://dropbox-authorize/', credentials['dropbox_client_id'])
+        this.dbx = dropboxAuthorization.dbx
+        dbx.usersGetCurrentAccount()
+            .then((response) => {
+                this.dropboxRefreshToken = refreshToken
+                console.log('response', response);
+                this.emit('config-changed')
+            })
+            .catch((error) => {
+                console.log(error);
+            })
     }
 
     close() {
