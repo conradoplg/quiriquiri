@@ -407,6 +407,7 @@ function addUser() {
 }
 
 ipcRenderer.on('authorized', (event, query) => {
+    addUserWin.close()
     twitterAuthorization.getAccessToken(query, function (error, token, secret) {
         if (error) {
             log.error(JSON.stringify(error))
@@ -432,6 +433,7 @@ function linkDropbox() {
 }
 
 ipcRenderer.on('dropbox-authorized', (event, code) => {
+    addUserWin.close()
     dropboxAuthorization.authenticate(code, function (error, refresh_token) {
         if (error) {
             log.error(JSON.stringify(error))

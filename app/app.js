@@ -60,13 +60,11 @@ class QuiriQuiriApp extends EventEmitter {
     }
 
     linkDropbox(refreshToken) {
-        dropboxAuthorization = new DropboxAuthorization('quiriquiri://dropbox-authorize/', credentials['dropbox_client_id'])
-        this.dbx = dropboxAuthorization.dbx
+        this.dropboxAuthorization = new DropboxAuthorization('quiriquiri://dropbox-authorize/', credentials['dropbox_client_id'], refreshToken)
+        let dbx = this.dropboxAuthorization.dbx
         dbx.usersGetCurrentAccount()
             .then((response) => {
-                this.dropboxRefreshToken = refreshToken
                 console.log('response', response);
-                this.emit('config-changed')
             })
             .catch((error) => {
                 console.log(error);

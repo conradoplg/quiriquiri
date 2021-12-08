@@ -32,7 +32,7 @@ DropboxAuthorization.prototype.authenticate = function (query, callback) {
     this.dbx.auth.setCodeVerifier(this.codeVerifier)
     this.dbx.auth.getAccessTokenFromCode(this.oauthRedirectURL, query['code'])
         .then((token) => {
-            dbx.auth.setRefreshToken(token.result.refresh_token);
+            this.dbx.auth.setRefreshToken(token.result.refresh_token);
             console.log(`DropboxAuthorization.authenticate().callback(null, ${token.result.refresh_token})`)
             callback(null, token.result.refresh_token)
         })

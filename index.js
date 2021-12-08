@@ -83,18 +83,22 @@ function createWindow() {
         const url = require('url').parse(request.url, true)
         log.debug(JSON.stringify(url.query))
         log.debug(url.hostname)
-        callback({ mimeType: 'text/html', data: '' })
+        log.debug('calling callback...')
+        // Calling callback here crashes Electron. But we don't need that
+        // since the window will be closed anyway.
+        // https://github.com/electron/electron/issues/28407
+        // callback({ mimeType: 'text/html', data: '' })
         if (url.hostname == 'authorize') {
+            log.debug('sending...')
             win.webContents.send('authorized', url.query)
         }
         if (url.hostname == 'dropbox-authorize') {
+            log.debug('sending...')
             win.webContents.send('dropbox-authorized', url.query)
         }
-        addUserWin.close()
+        log.debug('closing...')
     })
 }
-
-//protocol.registerStandardSchemes(['quiriquiri'])
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
