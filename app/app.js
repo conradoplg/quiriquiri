@@ -25,6 +25,9 @@ class QuiriQuiriApp extends EventEmitter {
             }
         }
         this.dropboxRefreshToken = config.dropbox_refresh_token
+        if (this.dropboxRefreshToken) {
+            this.dropboxAuthorization = new DropboxAuthorization('quiriquiri://dropbox-authorize/', credentials['dropbox_client_id'], this.dropboxRefreshToken)
+        }
     }
 
     saveConfig(config) {
@@ -64,9 +67,12 @@ class QuiriQuiriApp extends EventEmitter {
         let dbx = this.dropboxAuthorization.dbx
         dbx.usersGetCurrentAccount()
             .then((response) => {
+                this.dropboxRefreshToken = refreshToken
+                this.emit('config-changed')
                 console.log('response', response);
             })
             .catch((error) => {
+                delete this.dropboxAuthorization
                 console.log(error);
             })
     }

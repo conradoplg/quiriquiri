@@ -326,6 +326,22 @@ function mainReady() {
         quiri.saveConfig(config)
         log.debug('writing to file...')
         fs.writeFileSync('config.json', JSON.stringify(config, null, 4))
+        if (quiri.dropboxAuthorization) {
+            delete config.dropbox_refresh_token
+            quiri.dropboxAuthorization.dbx.filesUpload({
+                contents: JSON.stringify(config, null, 4),
+                path: '/config.json',
+                mode: { ".tag": "overwrite" },
+                autorename: false,
+                mute: true
+            })
+                .then(function (response) {
+                    log.debug('response', response)
+                })
+                .catch(function (error) {
+                    log.error(error)
+                });
+        }
     })
 
     let config
