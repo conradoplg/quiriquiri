@@ -29,7 +29,7 @@ class User extends EventEmitter {
             timeout_ms: 5 * 1000,
         })
         this.config = {}
-        this.config = {since_id: {}}
+        this.config = { since_id: {} }
         this.config.token = token
         this.config.secret = secret
         this.since_id = {}
@@ -37,11 +37,11 @@ class User extends EventEmitter {
 
     verify(callback) {
         this.twit.get('account/verify_credentials', {
-                skip_status: true
-            })
+            skip_status: true
+        })
             .catch(callback)
             .then((result) => {
-                log.debug('account/verify_credentials returned', [result.data, result.resp.statusCode])
+                // log.debug('account/verify_credentials returned', [result.data, result.resp.statusCode])
                 this.name = result.data.name
                 this.screen_name = result.data.screen_name
                 this.profile_image_url = result.data.profile_image_url_https
@@ -57,12 +57,30 @@ class User extends EventEmitter {
         this.config = all_users[this.screen_name] || {}
         this.config.since_id = this.config.since_id || {}
         this.since_id = Object.assign({}, this.config.since_id)
+        log.debug(["Loaded config for user", this.screen_name, JSON.stringify(this.config.since_id)])
+    }
+
+    loadCloudConfig(userCloudConfig) {
+        log.debug(['loadCloudConfig', this.screen_name, JSON.stringify(this.config), JSON.stringify(userCloudConfig)])
+        for (let tl in (userCloudConfig.since_id || {})) {
+            let original_id = this.config.since_id[tl] || "0"
+            let cloud_id = userCloudConfig.since_id[tl] || "0"
+            log.debug(["Updating since_id", this.screen_name, tl, original_id, cloud_id])
+            // This should take into account that these are strings, but it shouldn't matter
+            // until IDs have one additional digit...
+            if (cloud_id > original_id) {
+                this.config.since_id[tl] = cloud_id
+            } else {
+                this.config.since_id[tl] = original_id
+            }
+            log.debug(["New since_id: ", this.config.since_id[tl]])
+        }
     }
 
     saveConfig(config) {
         assert(this.screen_name, 'User has not been verified yet')
         config.users = config.users || {}
-        config.users[this.screen_name] = this.config
+        config.users[this.screen_name] = Object.assign({}, this.config)
     }
 
     start() {
@@ -98,7 +116,7 @@ class User extends EventEmitter {
     }
 
     markAsRead(tl, id_str) {
-        log.debug('user.markAsRead called with', [tl, id_str])
+        log.debug(['user.markAsRead called with', tl, id_str])
         this.config.since_id[tl] = id_str
         this.emit('config-changed', this)
     }
@@ -115,45 +133,45 @@ class User extends EventEmitter {
             args.auto_populate_reply_metadata = true
         }
         this.twit.post('statuses/update', args)
-        .catch((err) => {
-            log.debug('caught error postTweet', err)
-            this.emit('post-tweet-error', err)
-        }).then((result) => {
-            if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
-                this.emit('post-tweet-error', result.data)
-                return
-            }
-            this.emit('tweet-posted', this, result.data)
-        })
+            .catch((err) => {
+                log.debug('caught error postTweet', err)
+                this.emit('post-tweet-error', err)
+            }).then((result) => {
+                if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
+                    this.emit('post-tweet-error', result.data)
+                    return
+                }
+                this.emit('tweet-posted', this, result.data)
+            })
     }
 
     retweet(id) {
-        this.twit.post('statuses/retweet/:id', {id: id})
-        .catch((err) => {
-            log.debug('caught error retweet', err)
-            this.emit('retweet-error', err, id)
-        }).then((result) => {
-            if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
-                this.emit('retweet-error', result.data)
-                return
-            }
-            this.emit('retweeted', this, id)
-        })
+        this.twit.post('statuses/retweet/:id', { id: id })
+            .catch((err) => {
+                log.debug('caught error retweet', err)
+                this.emit('retweet-error', err, id)
+            }).then((result) => {
+                if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
+                    this.emit('retweet-error', result.data)
+                    return
+                }
+                this.emit('retweeted', this, id)
+            })
     }
 
     like(id) {
-        this.twit.post('favorites/create', {id: id})
-        .catch((err) => {
-            log.debug('caught error like', err)
-            this.emit('like-error', err, id)
-        }).then((result) => {
-            if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
-                log.debug('like error', result.data)
-                this.emit('like-error', result.data)
-                return
-            }
-            this.emit('liked', this, id)
-        })
+        this.twit.post('favorites/create', { id: id })
+            .catch((err) => {
+                log.debug('caught error like', err)
+                this.emit('like-error', err, id)
+            }).then((result) => {
+                if (result.resp.statusCode < 200 || result.resp.statusCode >= 300) {
+                    log.debug('like error', result.data)
+                    this.emit('like-error', result.data)
+                    return
+                }
+                this.emit('liked', this, id)
+            })
     }
 
     loadFriends() {

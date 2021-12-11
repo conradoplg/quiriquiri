@@ -57,21 +57,21 @@ function getOnTweetContextMenu(timelineDiv, user, tl, tweet) {
             label: 'Mark this and previous and read',
             click() {
                 user.markAsRead(tl, tweet.id_str)
-                let found = 0
-                timelineDiv.children().reverse().each(function (i, elem) {
-                    if (elem.id == 'tweet_' + tl + '_' + tweet.id_str) {
-                        found = 1
-                    } else if (found > 0) {
-                        found++
-                    }
-                    if (found > 50) {
-                        $(elem).remove()
-                    } else if (found > 0) {
-                        $(elem).addClass('read')
-                    }
-                })
-                setInterval(() => { $('body').scrollTop(0) }, 0)
-                updateUnreadCount(user, tl)
+                // let found = 0
+                // timelineDiv.children().reverse().each(function (i, elem) {
+                //     if (elem.id == 'tweet_' + tl + '_' + tweet.id_str) {
+                //         found = 1
+                //     } else if (found > 0) {
+                //         found++
+                //     }
+                //     if (found > 50) {
+                //         $(elem).remove()
+                //     } else if (found > 0) {
+                //         $(elem).addClass('read')
+                //     }
+                // })
+                // setInterval(() => { $('body').scrollTop(0) }, 0)
+                // updateUnreadCount(user, tl)
             }
         }))
         menu.append(new MenuItem({
@@ -228,7 +228,7 @@ function onTweetArrived(event, user, tl, tweets) {
 }
 
 function onUserAdded(event, user) {
-    log.debug('ipcRenderer user-added called with', user)
+    // log.debug('ipcRenderer user-added called with', user)
     userRenderer.addUserDoms(user, $('#timeline'), $('#user_list'))
     arrivedTweetsMap[user.data.screen_name] = new Set()
 }
@@ -327,7 +327,13 @@ function mainReady() {
         log.debug('writing to file...')
         fs.writeFileSync('config.json', JSON.stringify(config, null, 4))
         if (quiri.dropboxAuthorization) {
+            // Scrub secret data.
+            // TODO: this logic should be elsewhere...
             delete config.dropbox_refresh_token
+            for (let user in config.users) {
+                delete config.users[user]['token']
+                delete config.users[user]['secret']
+            }
             quiri.dropboxAuthorization.dbx.filesUpload({
                 contents: JSON.stringify(config, null, 4),
                 path: '/config.json',
@@ -340,13 +346,17 @@ function mainReady() {
                 })
                 .catch(function (error) {
                     log.error(error)
-                });
+                })
         }
     })
 
     let config
     try {
-        config = JSON.parse(fs.readFileSync('config.json', 'utf8'))
+        log.debug(['Reading config from', process.cwd()])
+        let content = fs.readFileSync('config.json', 'utf8')
+        log.debug(['Config read', content])
+        config = JSON.parse(content)
+        log.debug(['Loading config...', JSON.stringify(config)])
     } catch (err) {
         if (err.code === 'ENOENT') {
             log.info('Config file not found, loading empty config')
@@ -356,10 +366,63 @@ function mainReady() {
         }
     }
     quiri.loadConfig(config)
+    log.info('Loaded config')
+    log.info(['quiri.dropboxAuthorization', quiri.dropboxAuthorization])
+    if (quiri.dropboxAuthorization) {
+        quiri.dropboxAuthorization.dbx.filesDownload({ path: '/config.json' })
+            .then(function (response) {
+                log.info(['filesDownload returned success', response.result])
+                let rev = response.result.rev
+                response.result.fileBlob.text().then(
+                    text => {
+                        log.debug(['loaded Dropbox raw config', text])
+                        let cloudConfig = JSON.parse(text)
+                        log.debug(['loaded Dropbox config', JSON.stringify(cloudConfig)])
+                        quiri.loadCloudConfig(cloudConfig)
+                        updateShownTweets()
+                    }
+                )
+            })
+            .catch(function (error) {
+                log.error(['error in filesDownload', error])
+            })
+    }
+}
+
+function updateShownTweets(user) {
+    if (!user) {
+        for (let username in quiri.users) {
+            updateShownTweets(quiri.users[username])
+        }
+        return
+    }
+    let config = user.config
+    for (let tl in config.since_id) {
+        let id_str = config.since_id[tl]
+        console.log('updateShownTweets', [user.screen_name, tl, id_str])
+        let timelineDiv = $('#' + getTimelineId(user, tl))
+        let found = 0
+        timelineDiv.children().reverse().each((i, elem) => {
+            if (elem.id == 'tweet_' + tl + '_' + id_str) {
+                found = 1
+            } else if (found > 0) {
+                found++
+            }
+            if (found > 50) {
+                $(elem).remove()
+            } else if (found > 0) {
+                $(elem).addClass('read')
+            }
+        })
+        if (found) {
+            setInterval(() => { $('body').scrollTop(0) }, 0)
+            updateUnreadCount(user, tl)
+        }
+    }
 }
 
 quiri.on('user-added', (user) => {
-    log.debug('quiri.on user-added called with', user)
+    // log.debug('quiri.on user-added called with', user)
     onUserAdded(null, user)
     user.on('tweets-loaded', function (user, tl, tweets) {
         onTweetArrived(null, user, tl, tweets)
@@ -399,6 +462,9 @@ quiri.on('user-added', (user) => {
     })
     user.on('user-event', (user, event) => {
         onUserEvent(null, user, event)
+    })
+    user.on('config-changed', (user) => {
+        updateShownTweets(user)
     })
     user.start()
 })

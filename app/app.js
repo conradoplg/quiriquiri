@@ -30,6 +30,14 @@ class QuiriQuiriApp extends EventEmitter {
         }
     }
 
+    loadCloudConfig(cloudConfig) {
+        for (let username in (cloudConfig.users || {})) {
+            if (this.users[username]) {
+                this.users[username].loadCloudConfig(cloudConfig.users[username])
+            }
+        }
+    }
+
     saveConfig(config) {
         for (let username in this.users) {
             this.users[username].saveConfig(config)
@@ -43,7 +51,7 @@ class QuiriQuiriApp extends EventEmitter {
             if (err) {
                 console.log(err)
             } else {
-                log.debug('user.verify returned', user.data)
+                // log.debug('user.verify returned', user.data)
                 if (config) {
                     log.debug('Existing user added; loading config')
                     user.loadConfig(config)
