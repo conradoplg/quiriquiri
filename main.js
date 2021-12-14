@@ -369,23 +369,25 @@ function mainReady() {
     log.info('Loaded config')
     log.info(['quiri.dropboxAuthorization', quiri.dropboxAuthorization])
     if (quiri.dropboxAuthorization) {
-        quiri.dropboxAuthorization.dbx.filesDownload({ path: '/config.json' })
-            .then(function (response) {
-                log.info(['filesDownload returned success', response.result])
-                let rev = response.result.rev
-                response.result.fileBlob.text().then(
-                    text => {
-                        log.debug(['loaded Dropbox raw config', text])
-                        let cloudConfig = JSON.parse(text)
-                        log.debug(['loaded Dropbox config', JSON.stringify(cloudConfig)])
-                        quiri.loadCloudConfig(cloudConfig)
-                        updateShownTweets()
-                    }
-                )
-            })
-            .catch(function (error) {
-                log.error(['error in filesDownload', error])
-            })
+        setInterval(() => {
+            quiri.dropboxAuthorization.dbx.filesDownload({ path: '/config.json' })
+                .then(function (response) {
+                    log.info(['filesDownload returned success', response.result])
+                    let rev = response.result.rev
+                    response.result.fileBlob.text().then(
+                        text => {
+                            log.debug(['loaded Dropbox raw config', text])
+                            let cloudConfig = JSON.parse(text)
+                            log.debug(['loaded Dropbox config', JSON.stringify(cloudConfig)])
+                            quiri.loadCloudConfig(cloudConfig)
+                            updateShownTweets()
+                        }
+                    )
+                })
+                .catch(function (error) {
+                    log.error(['error in filesDownload', error])
+                })
+        }, 30000)
     }
 }
 
